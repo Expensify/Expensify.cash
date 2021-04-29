@@ -20,6 +20,7 @@ export default {
     NEW_CHAT: 'new/chat',
     REPORT,
     REPORT_WITH_ID: 'r/:reportID',
+    REPORT_WITH_ID_AND_SEQUENCE_NUMBER: 'r/:reportID/:sequenceNumber',
     getReportRoute: reportID => `r/${reportID}`,
     IOU_REQUEST: 'iou/request/:reportID',
     getIouRequestRoute: reportID => `iou/request/${reportID}`,

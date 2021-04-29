@@ -16,6 +16,9 @@ const propTypes = {
         params: PropTypes.shape({
             /* The ID of the report this screen should display */
             reportID: PropTypes.string,
+
+            /* The sequence number of the report action */
+            sequenceNumber: PropTypes.string,
         }).isRequired,
     }).isRequired,
 };
@@ -58,6 +61,16 @@ class ReportScreen extends React.Component {
     }
 
     /**
+     * Get the currently viewed report ID as number
+     *
+     * @returns {Number}
+     */
+    getReportActionID() {
+        const params = this.props.route.params;
+        return Number.parseInt(params.sequenceNumber, 10);
+    }
+
+    /**
      * When reports change there's a brief time content is not ready to be displayed
      *
      * @returns {Boolean}
@@ -85,6 +98,9 @@ class ReportScreen extends React.Component {
     }
 
     render() {
+        console.log("Over here, the reportID: "+this.getReportID());
+        console.log("Over here, the sequenceNumber: "+this.getReportActionID());
+
         return (
             <ScreenWrapper style={[styles.appContent, styles.flex1]}>
                 <HeaderView
@@ -94,7 +110,7 @@ class ReportScreen extends React.Component {
 
                 <FullScreenLoadingIndicator visible={this.shouldShowLoader()} />
 
-                <ReportView reportID={this.getReportID()} />
+                <ReportView reportID={this.getReportID()} sequenceNumber={this.getReportActionID()} />
             </ScreenWrapper>
         );
     }

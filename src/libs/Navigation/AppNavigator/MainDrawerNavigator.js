@@ -30,7 +30,7 @@ const MainDrawerNavigator = props => (
         drawerContent={() => <SidebarScreen />}
     >
         <Drawer.Screen
-            name="Report"
+            name={props.route.params.screen}
             component={ReportScreen}
 
             // Providing an empty string here will ensure that the ReportScreen does not show as '/r/undefined'
