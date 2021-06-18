@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import {withOnyx} from 'react-native-onyx';
 import OptionsSelector from '../components/OptionsSelector';
 import {getSearchOptions, getHeaderMessage} from '../libs/OptionsListUtils';
@@ -18,6 +19,7 @@ import CONST from '../CONST';
 import FullScreenLoadingIndicator from '../components/FullscreenLoadingIndicator';
 import withLocalize, {withLocalizePropTypes} from '../components/withLocalize';
 import compose from '../libs/compose';
+import * as API from '../libs/API';
 
 const personalDetailsPropTypes = PropTypes.shape({
     /** The login of the person (either email or phone number) */
@@ -51,6 +53,9 @@ const propTypes = {
         email: PropTypes.string.isRequired,
     }).isRequired,
 
+    /** */
+    countryCode: PropTypes.string.isRequired,
+
     /** Window Dimensions Props */
     ...windowDimensionsPropTypes,
 
@@ -74,9 +79,14 @@ class SearchPage extends Component {
             '',
             props.betas,
         );
+        this.validateInput = _.debounce(this.validateInput.bind(this), 300);
+
+
+        this.preserveRecentReports = recentReports;
 
         this.state = {
             searchValue: '',
+            headerMessage: '',
             recentReports,
             personalDetails,
             userToInvite,
@@ -88,10 +98,10 @@ class SearchPage extends Component {
     }
 
     /**
-     * Returns the sections needed for the OptionsSelector
-     *
-     * @returns {Array}
-     */
+   * Returns the sections needed for the OptionsSelector
+   *
+   * @returns {Array}
+   */
     getSections() {
         const sections = [{
             title: this.props.translate('common.recents'),
@@ -101,48 +111,112 @@ class SearchPage extends Component {
         }];
 
         if (this.state.userToInvite) {
-            sections.push(({
+            sections.push({
                 undefined,
                 data: [this.state.userToInvite],
                 shouldShow: true,
                 indexOffset: 0,
-            }));
+            });
         }
 
         return sections;
     }
 
     /**
-     * Reset the search value and redirect to the selected report
-     *
-     * @param {Object} option
-     */
+   * Reset the search value and redirect to the selected report
+   * @param {Object} option
+   */
     selectReport(option) {
         if (!option) {
             return;
         }
 
         if (option.reportID) {
-            this.setState({
-                searchValue: '',
-            }, () => {
-                Navigation.navigate(ROUTES.getReportRoute(option.reportID));
-            });
+            this.setState(
+                {
+                    searchValue: '',
+                },
+                () => {
+                    Navigation.navigate(ROUTES.getReportRoute(option.reportID));
+                },
+            );
         } else {
-            fetchOrCreateChatReport([
-                this.props.session.email,
-                option.login,
-            ]);
+            fetchOrCreateChatReport([this.props.session.email, option.login]);
+        }
+    }
+
+
+    /**
+     * Validates search input via regexes and validation API (phone numbers only)
+     * @param {String} searchValue
+     * @returns {void}
+     */
+    validateInput(searchValue) {
+        if (!searchValue) {
+            return;
+        }
+
+        let modifiedSearchValue = searchValue;
+        const headerMessage = getHeaderMessage(
+            this.state.personalDetails.length !== 0,
+            false,
+            searchValue,
+        );
+
+        if (/^[0-9]+$/.test(searchValue) || /^[0-9]*$/.test(searchValue)) {
+            // Appends country code
+            if (!searchValue.includes('+')) {
+                modifiedSearchValue = `+${this.props.countryCode}${searchValue}`;
+            }
+            API.IsValidPhoneNumber({phoneNumber: modifiedSearchValue}).then(
+                (resp) => {
+                    // Early return if the user had cleared the input before the API responsed.
+                    if (!this.state.searchValue) { return; }
+
+                    if (resp.isValid) {
+                        const {
+                            recentReports,
+                            personalDetails,
+                            userToInvite,
+                        } = getSearchOptions(
+                            this.props.reports,
+                            this.props.personalDetails,
+                            searchValue,
+                        );
+                        this.setState({
+                            userToInvite,
+                            recentReports,
+                            personalDetails,
+                            headerMessage: '',
+                        });
+                    } else {
+                        this.setState({
+                            recentReports: [],
+                            userToInvite: null,
+                            headerMessage,
+                        });
+                    }
+                },
+            );
+        } else {
+            const {recentReports, personalDetails, userToInvite} = getSearchOptions(
+                this.props.reports,
+                this.props.personalDetails,
+                searchValue,
+            );
+            this.setState({
+                userToInvite,
+                recentReports,
+                personalDetails,
+                headerMessage: recentReports.length + personalDetails.length
+            === 0 && !userToInvite ? this.props.translate('messages.noEmailOrPhone') : '',
+            });
         }
     }
 
     render() {
         const sections = this.getSections();
-        const headerMessage = getHeaderMessage(
-            (this.state.recentReports.length + this.state.personalDetails.length) !== 0,
-            Boolean(this.state.userToInvite),
-            this.state.searchValue,
-        );
+
         return (
             <ScreenWrapper>
                 {({didScreenTransitionEnd}) => (
@@ -159,24 +233,21 @@ class SearchPage extends Component {
                                 value={this.state.searchValue}
                                 onSelectRow={this.selectReport}
                                 onChangeText={(searchValue = '') => {
-                                    const {
-                                        recentReports,
-                                        personalDetails,
-                                        userToInvite,
-                                    } = getSearchOptions(
-                                        this.props.reports,
-                                        this.props.personalDetails,
-                                        searchValue,
-                                        this.props.betas,
-                                    );
-                                    this.setState({
-                                        searchValue,
-                                        userToInvite,
-                                        recentReports,
-                                        personalDetails,
-                                    });
+                                    this.setState({searchValue});
+
+                                    // Clears the header message on clearing the input
+                                    if (!searchValue) {
+                                        this.validateInput.cancel();
+                                        this.setState({
+                                            headerMessage: '',
+                                            userToInvite: null,
+                                            recentReports: this.preserveRecentReports,
+                                        });
+                                    } else {
+                                        this.validateInput(searchValue);
+                                    }
                                 }}
-                                headerMessage={headerMessage}
+                                headerMessage={this.state.headerMessage}
                                 hideSectionHeaders
                                 hideAdditionalOptionStates
                                 showTitleTooltip
@@ -206,6 +277,9 @@ export default compose(
         },
         session: {
             key: ONYXKEYS.SESSION,
+        },
+        countryCode: {
+            key: ONYXKEYS.COUNTRY_CODE,
         },
         betas: {
             key: ONYXKEYS.BETAS,

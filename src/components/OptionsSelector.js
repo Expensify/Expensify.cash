@@ -194,7 +194,7 @@ class OptionsSelector extends Component {
                     <TextInputWithFocusStyles
                         styleFocusIn={[styles.textInputReversedFocus]}
                         ref={el => this.textInput = el}
-                        style={[styles.textInput]}
+                        style={[styles.textInput, styles.flex1]}
                         value={this.props.value}
                         onChangeText={this.props.onChangeText}
                         onKeyPress={this.handleKeyPress}
@@ -203,6 +203,7 @@ class OptionsSelector extends Component {
                         placeholderTextColor={themeColors.placeholderText}
                     />
                 </View>
+
                 <OptionsList
                     ref={el => this.list = el}
                     optionHoveredStyle={styles.hoveredComponentBG}
@@ -218,6 +219,7 @@ class OptionsSelector extends Component {
                     forceTextUnreadStyle={this.props.forceTextUnreadStyle}
                     showTitleTooltip={this.props.showTitleTooltip}
                 />
+
             </View>
         );
     }
