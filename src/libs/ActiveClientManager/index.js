@@ -7,6 +7,14 @@ const clientID = Str.guid();
 const maxClients = 20;
 
 let activeClients;
+let isInitialized;
+
+// Keeps track of the ActiveClientManager's readiness in one place
+// so that multiple calls of isReady resolve the same promise
+const isInitializedPromise = new Promise((resolve) => {
+    isInitialized = resolve;
+});
+
 Onyx.connect({
     key: ONYXKEYS.ACTIVE_CLIENTS,
     callback: (val) => {
@@ -22,7 +30,9 @@ Onyx.connect({
  * Add our client ID to the list of active IDs
  */
 function init() {
-    Onyx.merge(ONYXKEYS.ACTIVE_CLIENTS, [clientID]);
+    Onyx.merge(ONYXKEYS.ACTIVE_CLIENTS, [clientID]).then(() => {
+        isInitialized();
+    });
 }
 
 /**
@@ -31,7 +41,13 @@ function init() {
  * @returns {Boolean}
  */
 function isClientTheLeader() {
-    return _.last(activeClients) === clientID;
+    return new Promise((resolve) => {
+        isInitializedPromise.then(() => {
+            // Manager is initialized with active clients so we know now whether or not this is the leader
+            // and can resolve the promise
+            resolve(_.last(activeClients) === clientID);
+        });
+    });
 }
 
 export {
