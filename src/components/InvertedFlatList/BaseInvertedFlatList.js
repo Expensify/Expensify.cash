@@ -2,8 +2,10 @@
 import _ from 'underscore';
 import React, {forwardRef, Component} from 'react';
 import PropTypes from 'prop-types';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
+import {FlatList} from 'react-native-bidirectional-infinite-scroll';
 import {lastItem} from '../../libs/CollectionUtils';
+import CONST from '../../CONST';
 
 const propTypes = {
     /** Same as FlatList can be any array of anything */
@@ -18,7 +20,8 @@ const propTypes = {
     /** Passed via forwardRef so we can access the FlatList ref */
     innerRef: PropTypes.oneOfType([
         PropTypes.func,
-        PropTypes.shape({current: PropTypes.instanceOf(FlatList)}),
+        // eslint-disable-next-line react/forbid-prop-types
+        PropTypes.shape({current: PropTypes.object}),
     ]).isRequired,
 
     /** Should we measure these items and call getItemLayout? */
@@ -150,10 +153,8 @@ class BaseInvertedFlatList extends Component {
                 // Web requires that items be measured or else crazy things happen when scrolling.
                 getItemLayout={this.props.shouldMeasureItems ? this.getItemLayout : undefined}
                 bounces={false}
-
-                // We keep this property very low so that chat switching remains fast
-                maxToRenderPerBatch={1}
-                windowSize={15}
+                maxToRenderPerBatch={CONST.REPORT.ACTIONS.LIMIT}
+                windowSize={CONST.REPORT.ACTIONS.LIMIT / 2}
                 removeClippedSubviews={this.props.shouldRemoveClippedSubviews}
             />
         );
