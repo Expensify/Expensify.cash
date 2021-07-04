@@ -1,13 +1,27 @@
-import { Compontent } from 'react';
+import React, {Component} from 'react';
+// import {withOnyx} from 'react-native-onyx';
 import PressableWithSecondaryInteraction from './PressableWithSecondaryInteraction';
 import ReportActionContextMenu from '../pages/home/report/ReportActionContextMenu';
+import PopoverWithMeasuredContent from './PopoverWithMeasuredContent';
+// import PopoverWithMeasuredContent from './PopoverWithMeasuredContent';
 
-class PressableWithContextMenu extends Compontent {
-  printName() {
+// const propTypes = {
 
-  }
+// }
 
-  render() {
+class PressableWithContextMenu extends Component {
+    render() {
+        return(
+            <div>
+                <PressableWithSecondaryInteraction onSecondaryInteraction={() => console.log('pressed')}>
+                  {this.props.children}
+                </PressableWithSecondaryInteraction>
+                <PopoverWithMeasuredContent>
 
-  }
+                </PopoverWithMeasuredContent>
+            </div>
+        )
+    }
 }
+
+export default PressableWithContextMenu;
