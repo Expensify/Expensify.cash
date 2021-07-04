@@ -18,6 +18,7 @@ import ThumbnailImage from './ThumbnailImage';
 import variables from '../styles/variables';
 import themeColors from '../styles/themes/default';
 import Text from './Text';
+import PressableWithContextMenu from './PressableWithContextMenu';
 
 const MAX_IMG_DIMENSIONS = 512;
 
@@ -51,22 +52,24 @@ function AnchorRenderer({tnode, key, style}) {
     // An auth token is needed to download Expensify chat attachments
     const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
     return (
-        <AnchorForCommentsOnly
-            href={htmlAttribs.href}
-            isAuthTokenRequired={isAttachment}
+        <PressableWithContextMenu>
+            <AnchorForCommentsOnly
+                href={htmlAttribs.href}
+                isAuthTokenRequired={isAttachment}
 
-            // Unless otherwise specified open all links in
-            // a new window. On Desktop this means that we will
-            // skip the default Save As... download prompt
-            // and defer to whatever browser the user has.
-            // eslint-disable-next-line react/jsx-props-no-multi-spaces
-            target={htmlAttribs.target || '_blank'}
-            rel={htmlAttribs.rel || 'noopener noreferrer'}
-            style={style}
-            key={key}
-        >
-            <TNodeChildrenRenderer tnode={tnode} />
-        </AnchorForCommentsOnly>
+                // Unless otherwise specified open all links in
+                // a new window. On Desktop this means that we will
+                // skip the default Save As... download prompt
+                // and defer to whatever browser the user has.
+                // eslint-disable-next-line react/jsx-props-no-multi-spaces
+                target={htmlAttribs.target || '_blank'}
+                rel={htmlAttribs.rel || 'noopener noreferrer'}
+                style={style}
+                key={key}
+            >
+                <TNodeChildrenRenderer tnode={tnode} />
+            </AnchorForCommentsOnly>
+        </PressableWithContextMenu>
     );
 }
 
