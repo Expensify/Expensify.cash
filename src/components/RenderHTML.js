@@ -19,6 +19,7 @@ import variables from '../styles/variables';
 import themeColors from '../styles/themes/default';
 import Text from './Text';
 import PressableWithContextMenu from './PressableWithContextMenu';
+import Clipboard from '../libs/Clipboard';
 
 const MAX_IMG_DIMENSIONS = 512;
 
@@ -48,11 +49,15 @@ function computeImagesMaxWidth(contentWidth) {
 
 function AnchorRenderer({tnode, key, style}) {
     const htmlAttribs = tnode.attributes;
+    const contextMenuOptions = [{
+        text: "Copy URL to Clipboard",
+        onPress: () => Clipboard.setString(htmlAttribs.href);
+    }];
 
     // An auth token is needed to download Expensify chat attachments
     const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
     return (
-        <PressableWithContextMenu>
+        <PressableWithContextMenu contextMenu={contextMenuOptions}>
             <AnchorForCommentsOnly
                 href={htmlAttribs.href}
                 isAuthTokenRequired={isAttachment}
