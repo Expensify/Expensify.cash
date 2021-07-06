@@ -93,7 +93,6 @@ class PressableWithContextMenu extends Component {
    */
     showPopover(event) {
       const { nativeEvent = {} } = event;
-      event.stopPropagation();
       this.capturePressLocation(nativeEvent).then(() => {
           this.setState({isPopoverVisible: true});
       });
@@ -127,9 +126,12 @@ class PressableWithContextMenu extends Component {
     render() {
         return(
             <View>
-                <Pressable onLongPress={this.showPopover}>
-                    {this.props.children}
-                </Pressable>
+              <PressableWithSecondaryInteraction
+                ref={el => this.popoverAnchor = el}
+                onSecondaryInteraction={this.showPopover}
+              >
+                  {this.props.children}
+              </PressableWithSecondaryInteraction>
                 {this.state.isPopoverVisible &&
                 (<PopoverWithMeasuredContent
                   isVisible={this.state.isPopoverVisible}

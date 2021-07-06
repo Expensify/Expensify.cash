@@ -35,6 +35,7 @@ class PressableWithSecondaryInteraction extends Component {
     executeSecondaryInteractionOnContextMenu(e) {
         const selection = window.getSelection().toString();
         e.preventDefault();
+        e.stopPropagation();
         this.props.onSecondaryInteraction(e, selection);
     }
 
