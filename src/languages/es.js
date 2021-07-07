@@ -107,6 +107,9 @@ export default {
         deleteComment: 'Eliminar Comentario',
         deleteConfirmation: '¿Estás seguro de que quieres eliminar este comentario?',
     },
+    htmlContextMenu: {
+        copyURLToClipboard: 'Copiar URL al Portapapeles',
+    },
     reportActionsView: {
         beFirstPersonToComment: 'Sé el primero en comentar',
     },
