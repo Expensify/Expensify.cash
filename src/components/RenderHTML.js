@@ -178,7 +178,7 @@ const RenderHTML = (props) => {
             icon: ClipboardIcon,
             successText: props.translate('reportActionContextMenu.copied'),
             successIcon: Checkmark,
-            onPress: () => Clipboard.setString(htmlAttribs.href)
+            onPress: () => Clipboard.setString(htmlAttribs.href),
         }];
 
         // An auth token is needed to download Expensify chat attachments

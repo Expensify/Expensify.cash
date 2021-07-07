@@ -1,23 +1,33 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {isFunction} from 'underscore';
+import {isFunction, isEqual} from 'underscore';
 import PressableWithSecondaryInteraction from './PressableWithSecondaryInteraction';
 import PopoverWithMeasuredContent from './PopoverWithMeasuredContent';
 import ReportActionContextMenuItem from '../pages/home/report/ReportActionContextMenuItem';
 
-// Adds secondary actions via right-clicking or long-pressing to any elements.
-// Pass in an array of secondary interactions (see shape of propTypes)
+/**
+ * Adds secondary actions via right-clicking or long-pressing to any element.
+ * Pass in an array of context menu actions (see shape of propTypes)
+ */
 
 const propTypes = {
-  contextMenuItems: PropTypes.arrayOf(PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    icon: PropTypes.elementType.isRequired,
-    onPress: PropTypes.func.isRequired,
-    successIcon: PropTypes.elementType,
-    successText: PropTypes.string
-  }))
-}
+    /** Array of context menu actions */
+    contextMenuItems: PropTypes.arrayOf(PropTypes.shape({
+        text: PropTypes.string.isRequired,
+        icon: PropTypes.elementType.isRequired,
+        onPress: PropTypes.func.isRequired,
+        successIcon: PropTypes.elementType,
+        successText: PropTypes.string,
+    })),
+
+    /** Element(s) to wrap in a pressbale/secondary action */
+    children: PropTypes.elementType.isRequired,
+};
+
+const defaultProps = {
+    contextMenuItems: [],
+};
 
 class PressableWithContextMenu extends Component {
     constructor(props) {
@@ -42,6 +52,21 @@ class PressableWithContextMenu extends Component {
         this.showPopover = this.showPopover.bind(this);
         this.hidePopover = this.hidePopover.bind(this);
         this.renderContextMenu = this.renderContextMenu.bind(this);
+        this.measurePopoverAnchorPosition = this.measurePopoverAnchorPosition.bind(this);
+    }
+
+    componentDidMount() {
+        Dimensions.addEventListener('change', this.measurePopoverAnchorPosition);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const shouldUpdate = this.state.isPopoverVisible !== nextState.isPopoverVisible
+            || !isEqual(this.state.popoverAnchorPosition, nextState.popoverAnchorPosition);
+        return shouldUpdate;
+    }
+
+    componentWillUnmount() {
+        Dimensions.removeEventListener('change', this.measurePopoverAnchorPosition);
     }
 
     /**
@@ -62,24 +87,43 @@ class PressableWithContextMenu extends Component {
     }
 
     /**
+     * This gets called on Dimensions change to find the anchor coordinates for the action context menu.
+     */
+    measurePopoverAnchorPosition() {
+        if (!this.state.isPopoverVisible) {
+            return;
+        }
+        this.getMeasureLocation().then(({x, y}) => {
+            this.setState(prev => {
+                return {
+                    popoverAnchorPosition: {
+                        horizontal: prev.cursorPosition.horizontal + x,
+                        vertical: prev.cursorPosition.vertical + y,
+                    },
+                };
+            });
+        });
+    }
+
+    /**
    * Save the location of a native press event & set the Initial Context menu anchor coordinates
    *
    * @param {Object} nativeEvent
    * @returns {Promise}
    */
     capturePressLocation(nativeEvent) {
-      return this.getMeasureLocation().then(({x, y}) => {
-          this.setState({
-              cursorPosition: {
-                  horizontal: nativeEvent.pageX - x,
-                  vertical: nativeEvent.pageY - y,
-              },
-              popoverAnchorPosition: {
-                  horizontal: nativeEvent.pageX,
-                  vertical: nativeEvent.pageY,
-              },
-          });
-      });
+        return this.getMeasureLocation().then(({x, y}) => {
+            this.setState({
+                cursorPosition: {
+                    horizontal: nativeEvent.pageX - x,
+                    vertical: nativeEvent.pageY - y,
+                },
+                popoverAnchorPosition: {
+                    horizontal: nativeEvent.pageX,
+                    vertical: nativeEvent.pageY,
+                },
+            });
+        });
     }
 
     /**
@@ -89,7 +133,7 @@ class PressableWithContextMenu extends Component {
    * @param {string} [selection] - A copy text.
    */
     showPopover(event) {
-        const { nativeEvent = {} } = event;
+        const {nativeEvent = {}} = event;
         this.capturePressLocation(nativeEvent).then(() => {
             this.setState({isPopoverVisible: true});
         });
@@ -97,36 +141,37 @@ class PressableWithContextMenu extends Component {
 
     /**
     * Hide the ReportActionContextMenu modal popover.
+    * @param {Boolean} shouldDelay if true, will delay hiding the popover for aesthetics
     * @param {Function} onHideCallback Callback to be called after popover is completely hidden
     */
     hidePopover(shouldDelay, onHideCallback) {
         if (isFunction(onHideCallback)) {
             this.onPopoverHide = onHideCallback;
         }
-        setTimeout(() => this.setState({isPopoverVisible: false}), shouldDelay ? 800: 0);
+        setTimeout(() => this.setState({isPopoverVisible: false}), shouldDelay ? 800 : 0);
     }
 
     renderContextMenu() {
-      return (
-          <View>
-              {this.props.contextMenuItems.map((option, index) => {
-                  return (
-                    <ReportActionContextMenuItem
-                        key={index}
-                        icon={option.icon}
-                        text={option.text}
-                        successText={option.successText}
-                        successIcon={option.successIcon}
-                        onPress={() => this.hidePopover(true, option.onPress)}
-                    />
-                  );
-              })}
-          </View>
-      )
+        return (
+            <View>
+                {this.props.contextMenuItems.map(function (option) {
+                    return (
+                        <ReportActionContextMenuItem
+                            key={option.text}
+                            icon={option.icon}
+                            text={option.text}
+                            successText={option.successText}
+                            successIcon={option.successIcon}
+                            onPress={() => this.hidePopover(true, option.onPress)}
+                        />
+                    );
+                })}
+            </View>
+        );
     }
 
     render() {
-        return(
+        return (
             <View>
                 <PressableWithSecondaryInteraction
                     ref={el => this.popoverAnchor = el}
@@ -148,8 +193,11 @@ class PressableWithContextMenu extends Component {
                     {this.renderContextMenu()}
                 </PopoverWithMeasuredContent>
             </View>
-        )
+        );
     }
 }
+
+PressableWithContextMenu.propTypes = propTypes;
+PressableWithContextMenu.defaultProps = defaultProps;
 
 export default PressableWithContextMenu;
