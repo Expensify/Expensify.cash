@@ -41,7 +41,7 @@ class PressableWithContextMenu extends Component {
         this.popoverAnchor = undefined;
         this.showPopover = this.showPopover.bind(this);
         this.hidePopover = this.hidePopover.bind(this);
-        this.renderContexMenu = this.renderContexMenu.bind(this);
+        this.renderContextMenu = this.renderContextMenu.bind(this);
     }
 
     /**
@@ -99,14 +99,14 @@ class PressableWithContextMenu extends Component {
     * Hide the ReportActionContextMenu modal popover.
     * @param {Function} onHideCallback Callback to be called after popover is completely hidden
     */
-    hidePopover(onHideCallback) {
+    hidePopover(shouldDelay, onHideCallback) {
         if (isFunction(onHideCallback)) {
             this.onPopoverHide = onHideCallback;
         }
-        this.setState({isPopoverVisible: false});
+        setTimeout(() => this.setState({isPopoverVisible: false}), shouldDelay ? 800: 0);
     }
 
-    renderContexMenu() {
+    renderContextMenu() {
       return (
           <View>
               {this.props.contextMenuItems.map((option, index) => {
@@ -116,8 +116,8 @@ class PressableWithContextMenu extends Component {
                         icon={option.icon}
                         text={option.text}
                         successText={option.successText}
-                        successIcon={option.sucessIcon}
-                        onPress={() => this.hidePopover(option.onPress)}
+                        successIcon={option.successIcon}
+                        onPress={() => this.hidePopover(true, option.onPress)}
                     />
                   );
               })}
@@ -141,11 +141,11 @@ class PressableWithContextMenu extends Component {
                     anchorPosition={this.state.popoverAnchorPosition}
                     animationIn="fadeIn"
                     animationOutTiming={1}
-                    measureContent={this.renderContexMenu}
+                    measureContent={this.renderContextMenu}
                     shouldSetModalVisibility={false}
                     fullscreen={false}
                 >
-                    {this.renderContexMenu()}
+                    {this.renderContextMenu()}
                 </PopoverWithMeasuredContent>
             </View>
         )
