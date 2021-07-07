@@ -17,10 +17,12 @@ import AttachmentModal from './AttachmentModal';
 import ThumbnailImage from './ThumbnailImage';
 import variables from '../styles/variables';
 import themeColors from '../styles/themes/default';
+import compose from '../libs/compose';
+import withLocalize from './withLocalize';
 import Text from './Text';
 import PressableWithContextMenu from './PressableWithContextMenu';
 import Clipboard from '../libs/Clipboard';
-import { Clipboard as ClipboardIcon } from './Icon/Expensicons';
+import { Clipboard as ClipboardIcon, Checkmark } from './Icon/Expensicons';
 
 const MAX_IMG_DIMENSIONS = 512;
 

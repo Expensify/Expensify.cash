@@ -1,24 +1,21 @@
 import React, {Component} from 'react';
-import {View, Pressable} from 'react-native';
+import {View} from 'react-native';
 import PropTypes from 'prop-types';
+import {isFunction} from 'underscore';
 import PressableWithSecondaryInteraction from './PressableWithSecondaryInteraction';
-import ReportActionContextMenu from '../pages/home/report/ReportActionContextMenu';
 import PopoverWithMeasuredContent from './PopoverWithMeasuredContent';
 import ReportActionContextMenuItem from '../pages/home/report/ReportActionContextMenuItem';
 
 // Adds secondary actions via right-clicking or long-pressing to any elements.
-// You also pass in a list of possible secondary interactions
-
-class HTMLContextMenu extends Component {
-    render() {
-        return (<View>{this.props.children}</View>)
-    }
-}
+// Pass in an array of secondary interactions (see shape of propTypes)
 
 const propTypes = {
   contextMenuItems: PropTypes.arrayOf(PropTypes.shape({
-    text: PropTypes.string,
-    onPress: PropTypes.func
+    text: PropTypes.string.isRequired,
+    icon: PropTypes.elementType.isRequired,
+    onPress: PropTypes.func.isRequired,
+    successIcon: PropTypes.elementType,
+    successText: PropTypes.string
   }))
 }
 
@@ -92,60 +89,64 @@ class PressableWithContextMenu extends Component {
    * @param {string} [selection] - A copy text.
    */
     showPopover(event) {
-      const { nativeEvent = {} } = event;
-      this.capturePressLocation(nativeEvent).then(() => {
-          this.setState({isPopoverVisible: true});
-      });
+        const { nativeEvent = {} } = event;
+        this.capturePressLocation(nativeEvent).then(() => {
+            this.setState({isPopoverVisible: true});
+        });
     }
 
     /**
     * Hide the ReportActionContextMenu modal popover.
     * @param {Function} onHideCallback Callback to be called after popover is completely hidden
     */
-    hidePopover() {
+    hidePopover(onHideCallback) {
+        if (isFunction(onHideCallback)) {
+            this.onPopoverHide = onHideCallback;
+        }
         this.setState({isPopoverVisible: false});
     }
 
     renderContexMenu() {
       return (
-          <HTMLContextMenu>
+          <View>
               {this.props.contextMenuItems.map((option, index) => {
                   return (
                     <ReportActionContextMenuItem
                         key={index}
                         icon={option.icon}
                         text={option.text}
-                        onPress={option.onPress}
+                        successText={option.successText}
+                        successIcon={option.sucessIcon}
+                        onPress={() => this.hidePopover(option.onPress)}
                     />
                   );
               })}
-          </HTMLContextMenu>
+          </View>
       )
     }
 
     render() {
         return(
             <View>
-              <PressableWithSecondaryInteraction
-                ref={el => this.popoverAnchor = el}
-                onSecondaryInteraction={this.showPopover}
-              >
-                  {this.props.children}
-              </PressableWithSecondaryInteraction>
-                {this.state.isPopoverVisible &&
-                (<PopoverWithMeasuredContent
-                  isVisible={this.state.isPopoverVisible}
-                  onClose={this.hidePopover}
-                  // onModalHide={this.onPopoverHide}
-                  anchorPosition={this.state.popoverAnchorPosition}
-                  animationIn="fadeIn"
-                  animationOutTiming={1}
-                  measureContent={this.renderContexMenu}
-                  shouldSetModalVisibility={false}
-                  fullscreen={false}
+                <PressableWithSecondaryInteraction
+                    ref={el => this.popoverAnchor = el}
+                    onSecondaryInteraction={this.showPopover}
                 >
-                  {this.renderContexMenu()}
-                </PopoverWithMeasuredContent>)}
+                    {this.props.children}
+                </PressableWithSecondaryInteraction>
+                <PopoverWithMeasuredContent
+                    isVisible={this.state.isPopoverVisible}
+                    onClose={this.hidePopover}
+                    onModalHide={this.onPopoverHide}
+                    anchorPosition={this.state.popoverAnchorPosition}
+                    animationIn="fadeIn"
+                    animationOutTiming={1}
+                    measureContent={this.renderContexMenu}
+                    shouldSetModalVisibility={false}
+                    fullscreen={false}
+                >
+                    {this.renderContexMenu()}
+                </PopoverWithMeasuredContent>
             </View>
         )
     }
