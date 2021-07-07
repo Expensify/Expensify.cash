@@ -22,7 +22,7 @@ import withLocalize from './withLocalize';
 import Text from './Text';
 import PressableWithContextMenu from './PressableWithContextMenu';
 import Clipboard from '../libs/Clipboard';
-import { Clipboard as ClipboardIcon, Checkmark } from './Icon/Expensicons';
+import {Clipboard as ClipboardIcon, Checkmark} from './Icon/Expensicons';
 
 const MAX_IMG_DIMENSIONS = 512;
 
@@ -48,38 +48,6 @@ const EXTRA_FONTS = [
  */
 function computeImagesMaxWidth(contentWidth) {
     return Math.min(MAX_IMG_DIMENSIONS, contentWidth);
-}
-
-function AnchorRenderer({tnode, key, style}) {
-    const htmlAttribs = tnode.attributes;
-    const contextMenuOptions = [{
-        text: "Copy URL to Clipboard",
-        icon: ClipboardIcon,
-        onPress: () => Clipboard.setString(htmlAttribs.href)
-    }];
-
-    // An auth token is needed to download Expensify chat attachments
-    const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
-    return (
-        <PressableWithContextMenu contextMenuItems={contextMenuOptions}>
-            <AnchorForCommentsOnly
-                href={htmlAttribs.href}
-                isAuthTokenRequired={isAttachment}
-
-                // Unless otherwise specified open all links in
-                // a new window. On Desktop this means that we will
-                // skip the default Save As... download prompt
-                // and defer to whatever browser the user has.
-                // eslint-disable-next-line react/jsx-props-no-multi-spaces
-                target={htmlAttribs.target || '_blank'}
-                rel={htmlAttribs.rel || 'noopener noreferrer'}
-                style={style}
-                key={key}
-            >
-                <TNodeChildrenRenderer tnode={tnode} />
-            </AnchorForCommentsOnly>
-        </PressableWithContextMenu>
-    );
 }
 
 function CodeRenderer({
@@ -190,20 +158,6 @@ function ImgRenderer({tnode}) {
     );
 }
 
-// Define default element models for these renderers.
-AnchorRenderer.model = defaultHTMLElementModels.a;
-CodeRenderer.model = defaultHTMLElementModels.code;
-ImgRenderer.model = defaultHTMLElementModels.img;
-EditedRenderer.model = defaultHTMLElementModels.span;
-
-// Define the custom render methods
-const renderers = {
-    a: AnchorRenderer,
-    code: CodeRenderer,
-    img: ImgRenderer,
-    edited: EditedRenderer,
-};
-
 const propTypes = {
     /** HTML string to render */
     html: PropTypes.string.isRequired,
@@ -212,9 +166,59 @@ const propTypes = {
     debug: PropTypes.bool,
 };
 
-const RenderHTML = ({html, debug = false}) => {
+const RenderHTML = (props) => {
+    const {html, debug = false} = props;
     const {width} = useWindowDimensions();
     const containerWidth = width * 0.8;
+
+    function AnchorRenderer({tnode, key, style}) {
+        const htmlAttribs = tnode.attributes;
+        const contextMenuOptions = [{
+            text: props.translate('htmlContextMenu.copyURLToClipboard'),
+            icon: ClipboardIcon,
+            successText: props.translate('reportActionContextMenu.copied'),
+            successIcon: Checkmark,
+            onPress: () => Clipboard.setString(htmlAttribs.href)
+        }];
+
+        // An auth token is needed to download Expensify chat attachments
+        const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
+        return (
+            <PressableWithContextMenu contextMenuItems={contextMenuOptions}>
+                <AnchorForCommentsOnly
+                    href={htmlAttribs.href}
+                    isAuthTokenRequired={isAttachment}
+
+                    // Unless otherwise specified open all links in
+                    // a new window. On Desktop this means that we will
+                    // skip the default Save As... download prompt
+                    // and defer to whatever browser the user has.
+                    // eslint-disable-next-line react/jsx-props-no-multi-spaces
+                    target={htmlAttribs.target || '_blank'}
+                    rel={htmlAttribs.rel || 'noopener noreferrer'}
+                    style={style}
+                    key={key}
+                >
+                    <TNodeChildrenRenderer tnode={tnode} />
+                </AnchorForCommentsOnly>
+            </PressableWithContextMenu>
+        );
+    }
+
+    // Define default element models for these renderers.
+    AnchorRenderer.model = defaultHTMLElementModels.a;
+    CodeRenderer.model = defaultHTMLElementModels.code;
+    ImgRenderer.model = defaultHTMLElementModels.img;
+    EditedRenderer.model = defaultHTMLElementModels.span;
+
+    // Define the custom render methods
+    const renderers = {
+        a: AnchorRenderer,
+        code: CodeRenderer,
+        img: ImgRenderer,
+        edited: EditedRenderer,
+    };
+
     return (
         <HTML
             textSelectable
@@ -241,4 +245,4 @@ RenderHTML.defaultProps = {
     debug: false,
 };
 
-export default RenderHTML;
+export default compose(withLocalize)(RenderHTML);
