@@ -22,7 +22,7 @@ const propTypes = {
     })),
 
     /** Element(s) to wrap in a pressbale/secondary action */
-    children: PropTypes.elementType.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 const defaultProps = {
@@ -151,18 +151,16 @@ class PressableWithContextMenu extends Component {
     renderContextMenu() {
         return (
             <View>
-                {this.props.contextMenuItems.map(function (option) {
-                    return (
-                        <ReportActionContextMenuItem
-                            key={option.text}
-                            icon={option.icon}
-                            text={option.text}
-                            successText={option.successText}
-                            successIcon={option.successIcon}
-                            onPress={() => this.hidePopover(true, option.onPress)}
-                        />
-                    );
-                })}
+                {this.props.contextMenuItems.map(option => (
+                    <ReportActionContextMenuItem
+                        key={option.text}
+                        icon={option.icon}
+                        text={option.text}
+                        successText={option.successText}
+                        successIcon={option.successIcon}
+                        onPress={() => this.hidePopover(true, option.onPress)}
+                    />
+                ))}
             </View>
         );
     }
