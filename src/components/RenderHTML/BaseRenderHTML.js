@@ -18,10 +18,11 @@ import ThumbnailImage from '../ThumbnailImage';
 import variables from '../../styles/variables';
 import themeColors from '../../styles/themes/default';
 import Text from '../Text';
-import withLocalize from './withLocalize';
-import PressableWithContextMenu from './PressableWithContextMenu';
-import Clipboard from '../libs/Clipboard';
-import {Clipboard as ClipboardIcon, Checkmark} from './Icon/Expensicons';
+import withLocalize from '../withLocalize';
+import PressableWithContextMenu from '../PressableWithContextMenu';
+import Clipboard from '../../libs/Clipboard';
+import compose from '../../libs/compose';
+import {Clipboard as ClipboardIcon, Checkmark} from '../Icon/Expensicons';
 import {
     propTypes as renderHTMLPropTypes,
     defaultProps as renderHTMLDefaultProps,
@@ -249,4 +250,4 @@ BaseRenderHTML.displayName = 'BaseRenderHTML';
 BaseRenderHTML.propTypes = propTypes;
 BaseRenderHTML.defaultProps = defaultProps;
 
-export default compose(withLocalize)(RenderHTML);
+export default compose(withLocalize)(BaseRenderHTML);
