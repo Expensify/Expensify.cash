@@ -60,9 +60,8 @@ class PressableWithContextMenu extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const shouldUpdate = this.state.isPopoverVisible !== nextState.isPopoverVisible
+        return this.state.isPopoverVisible !== nextState.isPopoverVisible
             || !isEqual(this.state.popoverAnchorPosition, nextState.popoverAnchorPosition);
-        return shouldUpdate;
     }
 
     componentWillUnmount() {
@@ -70,7 +69,7 @@ class PressableWithContextMenu extends Component {
     }
 
     /**
-     * Get the Context menu anchor position
+     * Get the context menu anchor position
      * We calculate the achor coordinates from measureInWindow async method
      *
      * @returns {Promise<Object>}
@@ -94,19 +93,17 @@ class PressableWithContextMenu extends Component {
             return;
         }
         this.getMeasureLocation().then(({x, y}) => {
-            this.setState(prev => {
-                return {
-                    popoverAnchorPosition: {
-                        horizontal: prev.cursorPosition.horizontal + x,
-                        vertical: prev.cursorPosition.vertical + y,
-                    },
-                };
-            });
+            this.setState(prev => ({
+                popoverAnchorPosition: {
+                    horizontal: prev.cursorPosition.horizontal + x,
+                    vertical: prev.cursorPosition.vertical + y,
+                },
+            }));
         });
     }
 
     /**
-   * Save the location of a native press event & set the Initial Context menu anchor coordinates
+   * Save the location of a native press event & set the initial context menu anchor coordinates
    *
    * @param {Object} nativeEvent
    * @returns {Promise}
@@ -127,7 +124,7 @@ class PressableWithContextMenu extends Component {
     }
 
     /**
-   * Show the ContextMenu modal popover.
+   * Show the context menu modal popover.
    *
    * @param {Object} [event] - A press event.
    * @param {string} [selection] - A copy text.
@@ -140,7 +137,7 @@ class PressableWithContextMenu extends Component {
     }
 
     /**
-    * Hide the ReportActionContextMenu modal popover.
+    * Hide the context menu modal popover.
     * @param {Boolean} shouldDelay if true, will delay hiding the popover for aesthetics
     * @param {Function} onHideCallback Callback to be called after popover is completely hidden
     */
