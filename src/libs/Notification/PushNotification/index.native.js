@@ -49,34 +49,16 @@ function pushNotificationEventCallback(eventType, notification) {
 }
 
 /**
- * Register this device for push notifications for the given accountID.
- *
- * @param {String|Number} accountID
+ * Register push notification callbacks. This is separate from namedUser registration because it needs to be executed
+ * from a headless JS process, outside of any react lifecycle.
  */
-function register(accountID) {
-    if (UrbanAirship.getNamedUser() === accountID.toString()) {
-        // No need to register again for this accountID.
-        return;
-    }
-
-    // Get permissions to display push notifications (prompts user on iOS, but not Android)
-    UrbanAirship.enableUserPushNotifications()
-        .then((isEnabled) => {
-            if (!isEnabled) {
-                console.debug('[PUSH_NOTIFICATIONS] User has disabled visible push notifications for this app.');
-            }
-        });
-
-    // Register this device as a named user in AirshipAPI.
-    // Regardless of the user's opt-in status, we still want to receive silent push notifications.
-    console.debug(`[PUSH_NOTIFICATIONS] Subscribing to notifications for account ID ${accountID}`);
-    UrbanAirship.setNamedUser(accountID.toString());
-
+function init() {
     // Setup event listeners
     UrbanAirship.addListener(EventType.PushReceived, (notification) => {
         // If a push notification is received while the app is in foreground,
-        // we'll assume pusher is connected so we'll ignore it and not write the same data twice.
+        // we'll assume pusher is connected so we'll ignore is and not fetch the same data twice.
         if (AppState.currentState === 'active') {
+            // eslint-disable-next-line max-len
             console.debug('[PUSH_NOTIFICATION] Push received while app is in foreground, not executing any callback.');
             return;
         }
@@ -89,6 +71,32 @@ function register(accountID) {
     UrbanAirship.addListener(EventType.NotificationResponse, (event) => {
         pushNotificationEventCallback(EventType.NotificationResponse, event.notification);
     });
+}
+
+/**
+ * Register this device for push notifications for the given accountID.
+ *
+ * @param {String|Number} accountID
+ */
+function register(accountID) {
+    Promise.all([
+        UrbanAirship.getNamedUser(),
+        UrbanAirship.enableUserPushNotifications(),
+    ])
+        .then(([namedUser, arePushNotificationsEnabled]) => {
+            if (!arePushNotificationsEnabled) {
+                console.debug('[PUSH_NOTIFICATIONS] User has disabled visible push notifications for this app.');
+            }
+
+            if (namedUser === accountID.toString()) {
+                console.debug('[PUSH_NOTIFICATIONS] This user is already registered for push notifications.');
+            } else {
+                // Register this device as a named user in AirshipAPI.
+                // Regardless of the user's opt-in status, we still want to receive silent push notifications.
+                console.debug(`[PUSH_NOTIFICATIONS] Subscribing to notifications for account ID ${accountID}`);
+                UrbanAirship.setNamedUser(accountID.toString());
+            }
+        });
 }
 
 /**
@@ -142,6 +150,7 @@ function onSelected(notificationType, callback) {
 }
 
 export default {
+    init,
     register,
     deregister,
     onReceived,

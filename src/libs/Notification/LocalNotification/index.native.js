@@ -1,5 +1,8 @@
-// Local Notifications are not currently supported on mobile so we'll just noop here.
+import commonNotifications from './common';
+
 export default {
-    showCommentNotification: () => {},
+    ...commonNotifications,
+
+    // This notification is unused on iOS/Android
     showUpdateAvailableNotification: () => {},
 };
