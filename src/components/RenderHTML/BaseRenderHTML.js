@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import _ from 'underscore';
-import React from 'react';
+import React, {useState} from 'react';
 import {useWindowDimensions, TouchableOpacity} from 'react-native';
 import HTML, {
     defaultHTMLElementModels,
@@ -63,6 +63,44 @@ const EXTRA_FONTS = [
  */
 function computeImagesMaxWidth(contentWidth) {
     return Math.min(MAX_IMG_DIMENSIONS, contentWidth);
+}
+
+function AnchorRenderer(props) {
+    function renderer({tnode, key, style}) {
+        const htmlAttribs = tnode.attributes;
+        const contextMenuOptions = [{
+            text: props.translate('htmlContextMenu.copyURLToClipboard'),
+            icon: ClipboardIcon,
+            successText: props.translate('reportActionContextMenu.copied'),
+            successIcon: Checkmark,
+            onPress: () => Clipboard.setString(htmlAttribs.href),
+        }];
+
+        // An auth token is needed to download Expensify chat attachments
+        const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
+        return (
+            <PressableWithContextMenu contextMenuItems={contextMenuOptions}>
+                <AnchorForCommentsOnly
+                    href={htmlAttribs.href}
+                    isAuthTokenRequired={isAttachment}
+
+                    // Unless otherwise specified open all links in
+                    // a new window. On Desktop this means that we will
+                    // skip the default Save As... download prompt
+                    // and defer to whatever browser the user has.
+                    // eslint-disable-next-line react/jsx-props-no-multi-spaces
+                    target={htmlAttribs.target || '_blank'}
+                    rel={htmlAttribs.rel || 'noopener noreferrer'}
+                    style={style}
+                    key={key}
+                >
+                    <TNodeChildrenRenderer tnode={tnode} />
+                </AnchorForCommentsOnly>
+            </PressableWithContextMenu>
+        );
+    }
+    renderer.model = defaultHTMLElementModels.a;
+    return renderer;
 }
 
 function CodeRenderer({
@@ -173,75 +211,38 @@ function ImgRenderer({tnode}) {
     );
 }
 
+// Define default element models for these renderers.
+CodeRenderer.model = defaultHTMLElementModels.code;
+ImgRenderer.model = defaultHTMLElementModels.img;
+EditedRenderer.model = defaultHTMLElementModels.span;
+
 const BaseRenderHTML = (props) => {
-    const {html, debug, textSelectable} = props;
-    const {width} = useWindowDimensions();
-    const containerWidth = width * 0.8;
-
-    function AnchorRenderer({tnode, key, style}) {
-        const htmlAttribs = tnode.attributes;
-        const contextMenuOptions = [{
-            text: props.translate('htmlContextMenu.copyURLToClipboard'),
-            icon: ClipboardIcon,
-            successText: props.translate('reportActionContextMenu.copied'),
-            successIcon: Checkmark,
-            onPress: () => Clipboard.setString(htmlAttribs.href),
-        }];
-
-        // An auth token is needed to download Expensify chat attachments
-        const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
-        return (
-            <PressableWithContextMenu contextMenuItems={contextMenuOptions}>
-                <AnchorForCommentsOnly
-                    href={htmlAttribs.href}
-                    isAuthTokenRequired={isAttachment}
-
-                    // Unless otherwise specified open all links in
-                    // a new window. On Desktop this means that we will
-                    // skip the default Save As... download prompt
-                    // and defer to whatever browser the user has.
-                    // eslint-disable-next-line react/jsx-props-no-multi-spaces
-                    target={htmlAttribs.target || '_blank'}
-                    rel={htmlAttribs.rel || 'noopener noreferrer'}
-                    style={style}
-                    key={key}
-                >
-                    <TNodeChildrenRenderer tnode={tnode} />
-                </AnchorForCommentsOnly>
-            </PressableWithContextMenu>
-        );
-    }
-
-    // Define default element models for these renderers.
-    AnchorRenderer.model = defaultHTMLElementModels.a;
-    CodeRenderer.model = defaultHTMLElementModels.code;
-    ImgRenderer.model = defaultHTMLElementModels.img;
-    EditedRenderer.model = defaultHTMLElementModels.span;
+    const {width} = useWindowDimensions().width * 0.8;
 
     // Define the custom render methods
-    const renderers = {
-        a: AnchorRenderer,
+    const [renderers] = useState({
+        a: AnchorRenderer(props),
         code: CodeRenderer,
         img: ImgRenderer,
         edited: EditedRenderer,
-    };
+    });
 
     return (
         <HTML
-            textSelectable={textSelectable}
+            textSelectable={props.textSelectable}
             renderers={renderers}
             baseStyle={webViewStyles.baseFontStyle}
             tagsStyles={webViewStyles.tagStyles}
             enableCSSInlineProcessing={false}
-            contentWidth={containerWidth}
+            contentWidth={width}
             computeImagesMaxWidth={computeImagesMaxWidth}
             systemFonts={EXTRA_FONTS}
             imagesInitialDimensions={{
                 width: MAX_IMG_DIMENSIONS,
                 height: MAX_IMG_DIMENSIONS,
             }}
-            html={html}
-            debug={debug}
+            html={props.html}
+            debug={props.debug}
         />
     );
 };
