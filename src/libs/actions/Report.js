@@ -521,9 +521,13 @@ function updateReportActionMessage(reportID, sequenceNumber, message) {
  *
  * @param {Number} reportID
  * @param {Object} reportAction
- * @param {String} notificationPreference On what cadence the user would like to be notified
+ * @param {String} [notificationPreference] On what cadence the user would like to be notified
  */
-function updateReportWithNewAction(reportID, reportAction, notificationPreference) {
+function updateReportWithNewAction(
+    reportID,
+    reportAction,
+    notificationPreference = CONST.REPORT.NOTIFICATION_PREFERENCE.ALWAYS,
+) {
     const newMaxSequenceNumber = reportAction.sequenceNumber;
     const isFromCurrentUser = reportAction.actorAccountID === currentUserAccountID;
     const initialLastReadSequenceNumber = lastReadSequenceNumbers[reportID] || 0;
@@ -722,7 +726,12 @@ function subscribeToUserEvents() {
                 {error, pusherChannelName, eventName: Pusher.TYPE.REPORT_TOGGLE_PINNED},
             );
         });
+}
 
+/**
+ * Setup reportComment push notification callbacks.
+ */
+function subscribeToReportCommentPushNotifications() {
     PushNotification.onReceived(PushNotification.TYPE.REPORT_COMMENT, ({reportID, reportAction}) => {
         Log.info('[Report] Handled event sent by Airship', true, {reportID});
         updateReportWithNewAction(reportID, reportAction);
@@ -1348,6 +1357,7 @@ export {
     setNewMarkerPosition,
     subscribeToReportTypingEvents,
     subscribeToUserEvents,
+    subscribeToReportCommentPushNotifications,
     unsubscribeFromReportChannel,
     saveReportComment,
     broadcastUserIsTyping,
