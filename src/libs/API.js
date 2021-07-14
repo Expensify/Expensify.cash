@@ -1041,6 +1041,12 @@ function UpdatePolicy(parameters) {
     return Network.post(commandName, parameters);
 }
 
+function TriggerWelcome(parameters) {
+    const commandName = 'TriggerWelcome';
+    requireParameters(['location'], parameters, commandName);
+    return Network.post(commandName, parameters);
+}
+
 export {
     Authenticate,
     AuthenticateWithAccountID,
@@ -1099,4 +1105,5 @@ export {
     GetCurrencyList,
     Policy_Create,
     Policy_Employees_Remove,
+    TriggerWelcome,
 };

@@ -78,6 +78,7 @@ export default {
     getWorkspaceCardRoute: policyID => `workspace/${policyID}/card`,
     getWorkspacePeopleRoute: policyID => `workspace/${policyID}/people`,
     getWorkspaceInviteRoute: policyID => `workspace/${policyID}/invite`,
+    TRIGGER_WELCOME: 'trigger/welcome/:location',
     WORKSPACE_INVITE: 'workspace/:policyID/invite',
     REQUEST_CALL: 'request-call',
 

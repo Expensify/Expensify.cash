@@ -2,6 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import SignInPage from '../../../pages/signin/SignInPage';
 import SetPasswordPage from '../../../pages/SetPasswordPage';
+import TriggerWelcomePage from '../../../pages/TriggerWelcomePage';
 import PublicWorkspaceNewView from '../../../pages/workspace/PublicWorkspaceNewView';
 import ValidateLoginPage from '../../../pages/ValidateLoginPage';
 import SCREENS from '../../../SCREENS';
@@ -31,6 +32,10 @@ export default () => (
         <RootStack.Screen
             name="NewWorkspace"
             component={PublicWorkspaceNewView}
+        />
+        <RootStack.Screen
+            name="TriggerWelcome"
+            component={TriggerWelcomePage}
         />
         <RootStack.Screen
             name={SCREENS.VALIDATE_LOGIN_NEW_WORKSPACE}
