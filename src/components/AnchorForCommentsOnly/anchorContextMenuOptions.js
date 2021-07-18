@@ -8,6 +8,6 @@ export default function anchorContextMenuOptions(href, translate) {
         icon: ClipboardIcon,
         successText: translate('reportActionContextMenu.copied'),
         successIcon: Checkmark,
-        onPress: () => Clipboard.setString(href),
+        callback: () => Clipboard.setString(href),
     }];
 }

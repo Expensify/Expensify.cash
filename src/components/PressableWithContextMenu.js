@@ -7,8 +7,21 @@ import PopoverWithMeasuredContent from './PopoverWithMeasuredContent';
 import ReportActionContextMenuItem from '../pages/home/report/ReportActionContextMenuItem';
 
 /**
- * Adds secondary actions via right-clicking or long-pressing to any element.
- * Pass in an array of context menu actions (see shape of propTypes)
+ * Adds secondary actions via right-clicking (on desktop) or long-pressing (on mobile) to any element.
+ * Pass in an array of context menu actions that will appear on right-click/long-press (see shape of propTypes).
+ *
+ * If you want the item to also have have single onPress functionality (along side the long-press/right-clicking
+ * functionality) pass in an onPress function.
+ *
+ * <PressableWithContextMenu
+ *     onPress={OptionalOnPressFn}
+ *     contextMenuItems={[
+ *         {text: 'Copy to Clipbaord', icon: Clipboard, callback: () => console.log("Menu item clicked")}
+ *     ]}
+ * >
+ *     // some component we want to have secondary context-menu interations
+ *     <SomeComponent />
+ * </PressableWithContexMenu>
  */
 
 const propTypes = {
@@ -16,7 +29,7 @@ const propTypes = {
     contextMenuItems: PropTypes.arrayOf(PropTypes.shape({
         text: PropTypes.string.isRequired,
         icon: PropTypes.elementType.isRequired,
-        onPress: PropTypes.func.isRequired,
+        callback: PropTypes.func.isRequired,
         successIcon: PropTypes.elementType,
         successText: PropTypes.string,
     })),
@@ -162,7 +175,7 @@ class PressableWithContextMenu extends Component {
                         text={option.text}
                         successText={option.successText}
                         successIcon={option.successIcon}
-                        onPress={() => this.hidePopover(true, option.onPress)}
+                        onPress={() => this.hidePopover(true, option.callback)}
                     />
                 ))}
             </View>
