@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {isFunction, isEqual} from 'underscore';
 import PressableWithSecondaryInteraction from './PressableWithSecondaryInteraction';
 import PopoverWithMeasuredContent from './PopoverWithMeasuredContent';
-import ReportActionContextMenuItem from '../pages/home/report/ReportActionContextMenuItem';
+import ContextMenuItem from './ContextMenuItem';
 
 /**
  * Adds secondary actions via right-clicking (on desktop) or long-pressing (on mobile) to any element.
@@ -169,7 +169,7 @@ class PressableWithContextMenu extends Component {
         return (
             <View>
                 {this.props.contextMenuItems.map(option => (
-                    <ReportActionContextMenuItem
+                    <ContextMenuItem
                         key={option.text}
                         icon={option.icon}
                         text={option.text}

@@ -6,7 +6,7 @@ export default function anchorContextMenuOptions(href, translate) {
     return [{
         text: translate('htmlContextMenu.copyURLToClipboard'),
         icon: ClipboardIcon,
-        successText: translate('reportActionContextMenu.copied'),
+        successText: translate('contextMenuItem.copied'),
         successIcon: Checkmark,
         callback: () => Clipboard.setString(href),
     }];
