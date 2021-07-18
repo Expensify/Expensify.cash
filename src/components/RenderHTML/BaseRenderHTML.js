@@ -18,11 +18,7 @@ import ThumbnailImage from '../ThumbnailImage';
 import variables from '../../styles/variables';
 import themeColors from '../../styles/themes/default';
 import Text from '../Text';
-import withLocalize from '../withLocalize';
-import PressableWithContextMenu from '../PressableWithContextMenu';
-import Clipboard from '../../libs/Clipboard';
-import compose from '../../libs/compose';
-import {Clipboard as ClipboardIcon, Checkmark} from '../Icon/Expensicons';
+
 import {
     propTypes as renderHTMLPropTypes,
     defaultProps as renderHTMLDefaultProps,
@@ -65,38 +61,29 @@ function computeImagesMaxWidth(contentWidth) {
     return Math.min(MAX_IMG_DIMENSIONS, contentWidth);
 }
 
-function AnchorRenderer(props) {
+function AnchorRenderer() {
     function renderer({tnode, key, style}) {
         const htmlAttribs = tnode.attributes;
-        const contextMenuOptions = [{
-            text: props.translate('htmlContextMenu.copyURLToClipboard'),
-            icon: ClipboardIcon,
-            successText: props.translate('reportActionContextMenu.copied'),
-            successIcon: Checkmark,
-            onPress: () => Clipboard.setString(htmlAttribs.href),
-        }];
 
         // An auth token is needed to download Expensify chat attachments
         const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
         return (
-            <PressableWithContextMenu contextMenuItems={contextMenuOptions}>
-                <AnchorForCommentsOnly
-                    href={htmlAttribs.href}
-                    isAuthTokenRequired={isAttachment}
+            <AnchorForCommentsOnly
+                href={htmlAttribs.href}
+                isAuthTokenRequired={isAttachment}
 
-                    // Unless otherwise specified open all links in
-                    // a new window. On Desktop this means that we will
-                    // skip the default Save As... download prompt
-                    // and defer to whatever browser the user has.
-                    // eslint-disable-next-line react/jsx-props-no-multi-spaces
-                    target={htmlAttribs.target || '_blank'}
-                    rel={htmlAttribs.rel || 'noopener noreferrer'}
-                    style={style}
-                    key={key}
-                >
-                    <TNodeChildrenRenderer tnode={tnode} />
-                </AnchorForCommentsOnly>
-            </PressableWithContextMenu>
+                // Unless otherwise specified open all links in
+                // a new window. On Desktop this means that we will
+                // skip the default Save As... download prompt
+                // and defer to whatever browser the user has.
+                // eslint-disable-next-line react/jsx-props-no-multi-spaces
+                target={htmlAttribs.target || '_blank'}
+                rel={htmlAttribs.rel || 'noopener noreferrer'}
+                style={style}
+                key={key}
+            >
+                <TNodeChildrenRenderer tnode={tnode} />
+            </AnchorForCommentsOnly>
         );
     }
     renderer.model = defaultHTMLElementModels.a;
@@ -251,4 +238,4 @@ BaseRenderHTML.displayName = 'BaseRenderHTML';
 BaseRenderHTML.propTypes = propTypes;
 BaseRenderHTML.defaultProps = defaultProps;
 
-export default compose(withLocalize)(BaseRenderHTML);
+export default BaseRenderHTML;
