@@ -61,33 +61,29 @@ function computeImagesMaxWidth(contentWidth) {
     return Math.min(MAX_IMG_DIMENSIONS, contentWidth);
 }
 
-function AnchorRenderer() {
-    function renderer({tnode, key, style}) {
-        const htmlAttribs = tnode.attributes;
+function AnchorRenderer({tnode, key, style}) {
+    const htmlAttribs = tnode.attributes;
 
-        // An auth token is needed to download Expensify chat attachments
-        const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
-        return (
-            <AnchorForCommentsOnly
-                href={htmlAttribs.href}
-                isAuthTokenRequired={isAttachment}
+    // An auth token is needed to download Expensify chat attachments
+    const isAttachment = Boolean(htmlAttribs['data-expensify-source']);
+    return (
+        <AnchorForCommentsOnly
+            href={htmlAttribs.href}
+            isAuthTokenRequired={isAttachment}
 
-                // Unless otherwise specified open all links in
-                // a new window. On Desktop this means that we will
-                // skip the default Save As... download prompt
-                // and defer to whatever browser the user has.
-                // eslint-disable-next-line react/jsx-props-no-multi-spaces
-                target={htmlAttribs.target || '_blank'}
-                rel={htmlAttribs.rel || 'noopener noreferrer'}
-                style={style}
-                key={key}
-            >
-                <TNodeChildrenRenderer tnode={tnode} />
-            </AnchorForCommentsOnly>
-        );
-    }
-    renderer.model = defaultHTMLElementModels.a;
-    return renderer;
+            // Unless otherwise specified open all links in
+            // a new window. On Desktop this means that we will
+            // skip the default Save As... download prompt
+            // and defer to whatever browser the user has.
+            // eslint-disable-next-line react/jsx-props-no-multi-spaces
+            target={htmlAttribs.target || '_blank'}
+            rel={htmlAttribs.rel || 'noopener noreferrer'}
+            style={style}
+            key={key}
+        >
+            <TNodeChildrenRenderer tnode={tnode} />
+        </AnchorForCommentsOnly>
+    );
 }
 
 function CodeRenderer({
@@ -208,7 +204,7 @@ const BaseRenderHTML = (props) => {
 
     // Define the custom render methods
     const [renderers] = useState({
-        a: AnchorRenderer(props),
+        a: AnchorRenderer,
         code: CodeRenderer,
         img: ImgRenderer,
         edited: EditedRenderer,
