@@ -18,7 +18,6 @@ import ThumbnailImage from '../ThumbnailImage';
 import variables from '../../styles/variables';
 import themeColors from '../../styles/themes/default';
 import Text from '../Text';
-
 import {
     propTypes as renderHTMLPropTypes,
     defaultProps as renderHTMLDefaultProps,
