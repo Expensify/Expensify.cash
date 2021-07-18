@@ -5,6 +5,7 @@ import pressableWithSecondaryInteractionPropTypes from './pressableWithSecondary
 
 const defaultProps = {
     forwardedRef: () => {},
+    onPress: () => {},
 };
 
 /**
@@ -44,6 +45,7 @@ class PressableWithSecondaryInteraction extends Component {
         return (
             <Pressable
                 onLongPress={e => this.props.onSecondaryInteraction(e)}
+                onPress={this.props.onPress}
                 ref={el => this.pressableRef = el}
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...defaultPressableProps}

@@ -5,6 +5,7 @@ import pressableWithSecondaryInteractionPropTypes from './pressableWithSecondary
 
 const defaultProps = {
     forwardedRef: () => {},
+    onPress: () => {},
 };
 
 /**
@@ -16,6 +17,7 @@ const defaultProps = {
 const PressableWithSecondaryInteraction = props => (
     <Pressable
         ref={props.forwardedRef}
+        onPress={props.onPress}
         onLongPress={(e) => {
             e.preventDefault();
             props.onSecondaryInteraction(e);

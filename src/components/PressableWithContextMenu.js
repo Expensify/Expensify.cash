@@ -23,10 +23,15 @@ const propTypes = {
 
     /** Element(s) to wrap in a pressbale/secondary action */
     children: PropTypes.node.isRequired,
+
+    /** Accepts a function for onPress events that is eventually passed
+     * to the underlying react-native Pressable component */
+    onPress: PropTypes.func,
 };
 
 const defaultProps = {
     contextMenuItems: [],
+    onPress: () => {},
 };
 
 class PressableWithContextMenu extends Component {
@@ -47,8 +52,7 @@ class PressableWithContextMenu extends Component {
                 vertical: 0,
             },
         };
-
-        this.popoverAnchor = undefined;
+        this.pressableRef = undefined;
         this.showPopover = this.showPopover.bind(this);
         this.hidePopover = this.hidePopover.bind(this);
         this.renderContextMenu = this.renderContextMenu.bind(this);
@@ -77,8 +81,8 @@ class PressableWithContextMenu extends Component {
      */
     getMeasureLocation() {
         return new Promise((res) => {
-            if (this.popoverAnchor) {
-                this.popoverAnchor.measureInWindow((x, y) => res({x, y}));
+            if (this.pressableRef) {
+                this.pressableRef.measureInWindow((x, y) => res({x, y}));
             } else {
                 res({x: 0, y: 0});
             }
@@ -169,8 +173,9 @@ class PressableWithContextMenu extends Component {
         return (
             <View>
                 <PressableWithSecondaryInteraction
-                    ref={el => this.popoverAnchor = el}
+                    ref={element => this.pressableRef = element}
                     onSecondaryInteraction={this.showPopover}
+                    onPress={this.props.onPress}
                 >
                     {this.props.children}
                 </PressableWithSecondaryInteraction>
