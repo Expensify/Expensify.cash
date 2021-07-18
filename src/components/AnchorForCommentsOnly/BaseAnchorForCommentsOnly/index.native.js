@@ -2,6 +2,10 @@ import React from 'react';
 import {Linking, StyleSheet, Text} from 'react-native';
 import {propTypes, defaultProps} from '../anchorForCommentsOnlyPropTypes';
 import fileDownload from '../../../libs/fileDownload';
+import PressableWithContextMenu from '../../PressableWithContextMenu';
+import anchorContextMenuOptions from '../anchorContextMenuOptions';
+import withLocalize from '../../withLocalize';
+import compose from '../../../libs/compose';
 
 /*
  * This is a default anchor component for regular links.
@@ -11,20 +15,25 @@ const BaseAnchorForCommentsOnly = ({
     children,
     style,
     shouldDownloadFile,
+    translate,
     ...props
 }) => (
-    <Text
-        style={StyleSheet.flatten(style)}
+    <PressableWithContextMenu
         onPress={() => (shouldDownloadFile ? fileDownload(href) : Linking.openURL(href))}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...props}
+        contextMenuItems={anchorContextMenuOptions(href, translate)}
     >
-        {children}
-    </Text>
+        <Text
+            style={StyleSheet.flatten(style)}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...props}
+        >
+            {children}
+        </Text>
+    </PressableWithContextMenu>
 );
 
 BaseAnchorForCommentsOnly.propTypes = propTypes;
 BaseAnchorForCommentsOnly.defaultProps = defaultProps;
 BaseAnchorForCommentsOnly.displayName = 'BaseAnchorForCommentsOnly';
 
-export default BaseAnchorForCommentsOnly;
+export default compose(withLocalize)(BaseAnchorForCommentsOnly);
