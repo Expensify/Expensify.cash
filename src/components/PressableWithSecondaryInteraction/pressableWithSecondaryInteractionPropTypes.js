@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 
-export default {
+const propTypes = {
+    /** The function that should be called when this pressable is pressedIn */
+    onPressIn: PropTypes.func,
+
+    /** The function that should be called when this pressable is pressedOut */
+    onPressOut: PropTypes.func,
+
     /** The function that should be called when this pressable is LongPressed or right-clicked. */
     onSecondaryInteraction: PropTypes.func.isRequired,
 
@@ -13,3 +19,12 @@ export default {
     /** onPress event passed in from parent components */
     onPress: PropTypes.func,
 };
+
+const defaultProps = {
+    forwardedRef: () => {},
+    onPressIn: () => {},
+    onPressOut: () => {},
+    onPress: () => {},
+};
+
+export {propTypes, defaultProps};
