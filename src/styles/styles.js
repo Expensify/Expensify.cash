@@ -1793,6 +1793,26 @@ const styles = {
         ...whiteSpace.noWrap,
     },
 
+    termsRow: {
+        borderTopColor: themeColors.border,
+        borderTopWidth: 1,
+    },
+
+    termsRowBold: {
+        borderTopWidth: 3,
+        borderTopColor: themeColors.shadow,
+    },
+
+    termsTableItem: {
+        textAlign: 'center',
+        alignItems: 'center',
+    },
+
+    termsSection: {
+        borderBottomWidth: 4,
+        borderBottomColor: themeColors.border,
+    },
+
     communicationsLinkIcon: {
         right: -36,
         top: 0,

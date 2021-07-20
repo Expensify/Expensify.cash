@@ -17,6 +17,8 @@ import compose from '../../libs/compose';
 import ONYXKEYS from '../../ONYXKEYS';
 import CheckboxWithLabel from '../../components/CheckboxWithLabel';
 import Text from '../../components/Text';
+import ShortTermsForm from './TermsPage/ShortTermsForm';
+import LongTermsForm from './TermsPage/LongTermsForm';
 
 const propTypes = {
     /** Comes from Onyx. Information about the terms for the wallet */
@@ -64,12 +66,9 @@ class TermsStep extends React.Component {
                     onCloseButtonPress={() => Navigation.dismissModal()}
                 />
                 <View style={[styles.mh5, styles.flex1]}>
-                    <ScrollView>
-                        <Text>
-                            {/* @TODO build out the terms page */}
-                            {/* eslint-disable-next-line max-len */}
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </Text>
+                    <ScrollView style={styles.mb4}>
+                        <ShortTermsForm />
+                        <LongTermsForm />
                     </ScrollView>
                     <CheckboxWithLabel
                         style={styles.mb4}

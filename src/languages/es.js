@@ -51,6 +51,7 @@ export default {
         dateFormat: 'AAAA-MM-DD',
         send: 'Enviar',
         notifications: 'Notificaciones',
+        na: 'N/A',
         noResultsFound: 'No se han encontrado resultados',
         timePrefix: 'Son las',
         conjunctionFor: 'para',
@@ -414,6 +415,80 @@ export default {
             genericFailureMessage: 'Se produjo un error al invitar al usuario al espacio de trabajo. Vuelva a intentarlo..',
             welcomeNote: ({workspaceName}) => `¡Has sido invitado a la ${workspaceName} Espacio de trabajo! Descargue la aplicación móvil Expensify para comenzar a rastrear sus gastos.`,
         },
+    },
+    termsStep: {
+        headerTitle: 'Términos y tarifas',
+        haveReadAndAgree: 'He leído y acepto recibir',
+        electronicDisclosures: 'divulgaciones electrónicas',
+        agreeToThe: 'Estoy de acuerdo con',
+        walletAgreement: 'Acuerdo de billetera',
+        enablePayments: 'Habilitar pagos',
+        termsMustBeAccepted: 'Se deben aceptar los términos',
+        feeAmountZero: '$0',
+        monthlyFee: 'Cuota mensual',
+        inactivity: 'Inactividad',
+        electronicFundsInstantFee: '1.5% (mínimo de $ 0.25)',
+        noOverdraftOrCredit: 'Sin función de sobregiro / crédito',
+        shortTermsForm: {
+            perPurchase: 'Por compra',
+            atmWithdrawal: 'Retiro de cajero automático',
+            cashReload: 'Cash Reload',
+            inNetwork: 'en la red',
+            outOfNetwork: 'fuera de la red',
+            atmBalanceInquiry: 'Consulta de saldo de cajero automático',
+            inOrOutOfNetwork: 'dentro o fuera de la red',
+            customerService: 'Servicio al cliente',
+            automatedOrLive: '(agente automatizado o en vivo)',
+            afterTwelveMonths: '(después de 12 meses sin transacciones)',
+            weChargeOneFee: 'Cobramos 1 tipo de tarifa.',
+            electronicFundsWithdrawal: 'Retiro electrónico de fondos',
+            instant: '(instantáneo)',
+            fdicInsurance: 'Sus fondos son elegibles para el seguro de la FDIC.',
+            generalInfo: 'Para obtener información general sobre cuentas prepagas, visite',
+            conditionsDetails: 'Encuentra detalles y condiciones para todas las tarifas y servicios visitando',
+            conditionsPhone: 'o llamando al +1 833-400-0904.',
+        },
+        longTermsForm: {
+            listOfAllFees: 'Una lista de todas las tarifas de la cuenta Expensify Payments:',
+            typeOfFeeHeader: 'Tipo de tarifa',
+            feeAmountHeader: 'Importe de la tarifa',
+            moreDetailsHeader: 'Más detalles',
+            openingAccountTitle: 'Abrir una cuenta',
+            openingAccountDetails: 'No hay tarifa para crear una cuenta.',
+            monthlyFeeDetails: 'No hay tarifa mensual',
+            customerServiceAutomatedTitle: 'Servicio al cliente (automatizado)',
+            customerServiceLiveTitle: 'Servicio al cliente (agente en vivo)',
+            customerServiceDetails: 'No hay tarifas de servicio al cliente.',
+            inactivityDetails: 'No hay tarifa de inactividad.',
+            sendingFundsTitle: 'Enviar fondos a otro titular de cuenta',
+            sendingFundsDetails: 'No se aplica ningún cargo por enviar fondos a otro titular de cuenta utilizando su '
+            + 'saldo cuenta bancaria o tarjeta de débito',
+            electronicFundsStandardTitle: 'Retiro electrónico de fondos (estándar)',
+            electronicFundsStandardDetails: 'No hay cargo por transferir fondos desde su cuenta Expensify Payments'
+                + 'a su cuenta bancaria utilizando la opción estándar. Esta transferencia generalmente se completa en'
+                + '1-3 negocios días.',
+            electronicFundsInstantTitle: 'Retiro electrónico de fondos (instantáneo)',
+            electronicFundsInstantDetails: 'Hay una tarifa para transferir fondos desde su cuenta Expensify Payments a '
+                + 'su tarjeta de débito vinculada utilizando la opción de transferencia instantánea. Esta transferencia'
+                + ' generalmente se completa dentro de varios minutos. La tarifa es el 1.5% del monto de la '
+                + 'transferencia (con una tarifa mínima de $ 0.25). ',
+            fdicInsuranceBancorp: 'Sus fondos son elegibles para el seguro de la FDIC. Sus fondos se mantendrán en o '
+                + 'transferido a The Bancorp Bank, una institución asegurada por la FDIC. Una vez allí, sus fondos '
+                + 'están asegurados a $ 250,000 por la FDIC en caso de que The Bancorp Bank quiebre. Ver',
+            fdicInsuranceBancorp2: 'para detalles.',
+            contactExpensifyPayments: 'Comuníquese con Expensify Payments llamando al + 1833-400-0904, por correo'
+            + 'electrónico a',
+            contactExpensifyPayments2: 'o inicie sesión en',
+            generalInformation: 'Para obtener información general sobre cuentas prepagas, visite',
+            generalInformation2: 'Si tiene una queja sobre una cuenta prepaga, llame al Consumer Financial Oficina de '
+                + 'Protección al 1-855-411-2372 o visite',
+            printerFriendlyView: 'Vista fácil de imprimir',
+        },
+    },
+    activateStep: {
+        headerTitle: 'Habilitar pagos',
+        activated: 'Su billetera Expensify está lista para usar',
+        checkBackLater: 'Todavía estamos revisando su información. Por favor, vuelva más tarde.',
     },
     companyStep: {
         headerTitle: 'Información de la Empresa',
