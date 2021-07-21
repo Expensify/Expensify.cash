@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import _ from 'underscore';
-import React from 'react';
+import React, {useState} from 'react';
 import {useWindowDimensions, TouchableOpacity} from 'react-native';
 import HTML, {
     defaultHTMLElementModels,
@@ -194,38 +194,37 @@ function ImgRenderer({tnode}) {
 }
 
 // Define default element models for these renderers.
-AnchorRenderer.model = defaultHTMLElementModels.a;
 CodeRenderer.model = defaultHTMLElementModels.code;
 ImgRenderer.model = defaultHTMLElementModels.img;
 EditedRenderer.model = defaultHTMLElementModels.span;
 
-// Define the custom render methods
-const renderers = {
-    a: AnchorRenderer,
-    code: CodeRenderer,
-    img: ImgRenderer,
-    edited: EditedRenderer,
-};
+const BaseRenderHTML = (props) => {
+    const {width} = useWindowDimensions().width * 0.8;
 
-const BaseRenderHTML = ({html, debug, textSelectable}) => {
-    const {width} = useWindowDimensions();
-    const containerWidth = width * 0.8;
+    // Define the custom render methods
+    const [renderers] = useState({
+        a: AnchorRenderer,
+        code: CodeRenderer,
+        img: ImgRenderer,
+        edited: EditedRenderer,
+    });
+
     return (
         <HTML
-            textSelectable={textSelectable}
+            textSelectable={props.textSelectable}
             renderers={renderers}
             baseStyle={webViewStyles.baseFontStyle}
             tagsStyles={webViewStyles.tagStyles}
             enableCSSInlineProcessing={false}
-            contentWidth={containerWidth}
+            contentWidth={width}
             computeImagesMaxWidth={computeImagesMaxWidth}
             systemFonts={EXTRA_FONTS}
             imagesInitialDimensions={{
                 width: MAX_IMG_DIMENSIONS,
                 height: MAX_IMG_DIMENSIONS,
             }}
-            html={html}
-            debug={debug}
+            html={props.html}
+            debug={props.debug}
         />
     );
 };

@@ -2,6 +2,10 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import Text from '../../Text';
 import {propTypes, defaultProps} from '../anchorForCommentsOnlyPropTypes';
+import PressableWithContextMenu from '../../PressableWithContextMenu';
+import anchorContextMenuOptions from '../anchorContextMenuOptions';
+import withLocalize from '../../withLocalize';
+import compose from '../../../libs/compose';
 
 /*
  * This is a default anchor component for regular links.
@@ -12,22 +16,25 @@ const BaseAnchorForCommentsOnly = ({
     target,
     children,
     style,
+    translate,
     ...props
 }) => (
-    <Text
-        style={StyleSheet.flatten(style)}
-        accessibilityRole="link"
-        href={href}
-        hrefAttrs={{rel, target}}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...props}
-    >
-        {children}
-    </Text>
+    <PressableWithContextMenu contextMenuItems={anchorContextMenuOptions(href, translate)}>
+        <Text
+            style={StyleSheet.flatten(style)}
+            accessibilityRole="link"
+            href={href}
+            hrefAttrs={{rel, target}}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...props}
+        >
+            {children}
+        </Text>
+    </PressableWithContextMenu>
 );
 
 BaseAnchorForCommentsOnly.propTypes = propTypes;
 BaseAnchorForCommentsOnly.defaultProps = defaultProps;
 BaseAnchorForCommentsOnly.displayName = 'BaseAnchorForCommentsOnly';
 
-export default BaseAnchorForCommentsOnly;
+export default compose(withLocalize)(BaseAnchorForCommentsOnly);

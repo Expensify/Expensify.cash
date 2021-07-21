@@ -15,12 +15,16 @@ const propTypes = {
 
     /** The ref to the search input (may be null on small screen widths) */
     forwardedRef: PropTypes.func,
+
+    /** onPress event passed in from parent components */
+    onPress: PropTypes.func,
 };
 
 const defaultProps = {
     forwardedRef: () => {},
     onPressIn: () => {},
     onPressOut: () => {},
+    onPress: () => {},
 };
 
 export {propTypes, defaultProps};

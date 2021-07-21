@@ -119,6 +119,9 @@ export default {
         deleteComment: 'Delete Comment',
         deleteConfirmation: 'Are you sure you want to delete this comment?',
     },
+    htmlContextMenu: {
+        copyURLToClipboard: 'Copy URL to Clipboard',
+    },
     reportActionsView: {
         beFirstPersonToComment: 'Be the first person to comment',
     },
