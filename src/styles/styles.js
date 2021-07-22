@@ -290,18 +290,16 @@ const styles = {
 
     picker: {
         inputIOS: {
-            fontFamily: fontFamily.GTA,
-            fontSize: variables.fontSizeNormal,
-            paddingLeft: 12,
-            paddingRight: 12,
-            paddingTop: 10,
-            paddingBottom: 10,
-            borderRadius: variables.componentBorderRadius,
+            flex: 1,
             borderWidth: 1,
+            borderRadius: variables.componentBorderRadiusNormal,
             borderColor: themeColors.border,
-            color: themeColors.text,
-            height: variables.inputComponentSizeNormal,
-            opacity: 1,
+            paddingTop: 25,
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            justifyContent: 'center',
+            height: '100%',
+            backgroundColor: '#fff',
         },
         inputWeb: {
             fontFamily: fontFamily.GTA,
@@ -420,6 +418,57 @@ const styles = {
         marginRight: 8,
     },
 
+    expensiTextInputWrapper: {
+        height: 52,
+    },
+    expensiTextInputContainer: {
+        flex: 1,
+        borderWidth: 1,
+        borderRadius: variables.componentBorderRadiusNormal,
+        borderColor: themeColors.border,
+        paddingTop: 25,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        justifyContent: 'center',
+        height: '100%',
+        backgroundColor: '#fff',
+    },
+    expensiTextInputContainerWithoutLabel: {
+        paddingTop: 0,
+        paddingBottom: 0,
+    },
+    expensiTextInputContainerOnFocus: {
+        borderColor: themeColors.borderFocus,
+    },
+    expensiTextInputContainerOnError: {
+        borderColor: themeColors.badgeDangerBG,
+    },
+    expensiTextInputLabel: {
+        position: 'absolute',
+        left: 12,
+        top: 14,
+        fontSize: variables.fontSizeNormal,
+        color: themeColors.textSupporting,
+        fontFamily: fontFamily.GTA,
+        width: '100%',
+    },
+    expensiTextInputLabelDesktop: {
+        transformOrigin: 'left center',
+    },
+    expensiTextInputLabelTransformation: (translateY, translateX, scale) => ({
+        transform: [
+            {translateY},
+            {translateX},
+            {scale},
+        ],
+    }),
+    expensiTextInput: {
+        fontFamily: fontFamily.GTA,
+        fontSize: variables.fontSizeNormal,
+    },
+    expensiTextInputDesktop: {
+        outline: 'none',
+    },
     textInput: {
         backgroundColor: themeColors.componentBG,
         borderRadius: variables.componentBorderRadiusNormal,
@@ -435,6 +484,68 @@ const styles = {
         paddingBottom: 10,
         textAlignVertical: 'center',
     },
+
+    expensiPickerContainer: {
+        borderWidth: 1,
+        borderRadius: variables.componentBorderRadiusNormal,
+        borderColor: themeColors.border,
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+    },
+    expensiPickerContainerOnFocus: {
+        borderColor: themeColors.borderFocus,
+    },
+    expensiPickerContainerDisabled: {
+        backgroundColor: colors.gray1,
+        color: colors.gray3,
+    },
+    expensiPickerLabel: {
+        fontSize: variables.fontSizeLabel,
+        color: themeColors.textSupporting,
+        fontFamily: fontFamily.GTA,
+        position: 'absolute',
+        left: 12,
+        top: 8,
+    },
+    expensiPicker: (disabled = false) => ({
+        iconContainer: {
+            top: 16,
+            right: 12,
+        },
+        inputWeb: {
+            backgroundColor: 'transparent',
+            fontFamily: fontFamily.GTA,
+            fontSize: variables.fontSizeNormal,
+            appearance: 'none',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            border: 'none',
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            paddingTop: 24,
+            height: 52,
+            borderRadius: variables.componentBorderRadiusNormal,
+        },
+        inputIOS: {
+            backgroundColor: 'transparent',
+            fontFamily: fontFamily.GTA,
+            fontSize: variables.fontSizeNormal,
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            paddingTop: 24,
+            height: 52,
+            borderRadius: variables.componentBorderRadiusNormal,
+        },
+        inputAndroid: {
+            backgroundColor: 'transparent',
+            fontFamily: fontFamily.GTA,
+            fontSize: variables.fontSizeNormal,
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            paddingTop: 24,
+            height: 52,
+            borderRadius: variables.componentBorderRadiusNormal,
+        },
+    }),
 
     disabledText: {
         color: colors.gray3,
