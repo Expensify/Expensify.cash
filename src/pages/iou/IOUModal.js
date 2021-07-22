@@ -115,6 +115,7 @@ class IOUModal extends Component {
             }));
 
         this.state = {
+            previousStepIndex: 0,
             currentStepIndex: 0,
             participants: participantsWithDetails,
 
@@ -153,6 +154,20 @@ class IOUModal extends Component {
 
     getReady() {
         PersonalDetails.fetchCurrencyPreferences();
+    }
+
+    /**
+     * Decides our animation type based on whether we're increasing or decreasing
+     * our step index.
+     * @returns {String}
+    */
+    getAnimation() {
+        if (this.state.previousStepIndex < this.state.currentStepIndex) {
+            return 'slideInRight';
+        }
+        if (this.state.previousStepIndex > this.state.currentStepIndex) {
+            return 'slideInLeft';
+        }
     }
 
     /**
@@ -214,6 +229,7 @@ class IOUModal extends Component {
             return;
         }
         this.setState(prevState => ({
+            previousStepIndex: prevState.currentStepIndex,
             currentStepIndex: prevState.currentStepIndex - 1,
         }));
     }
@@ -226,6 +242,7 @@ class IOUModal extends Component {
             return;
         }
         this.setState(prevState => ({
+            previousStepIndex: prevState.currentStepIndex,
             currentStepIndex: prevState.currentStepIndex + 1,
         }));
     }
@@ -323,6 +340,7 @@ class IOUModal extends Component {
                                 <>
                                     {currentStep === Steps.IOUAmount && (
                                         <IOUAmountPage
+                                            animation={this.getAnimation()}
                                             onStepComplete={(amount) => {
                                                 this.setState({amount});
                                                 this.navigateToNextStep();
@@ -337,6 +355,7 @@ class IOUModal extends Component {
                                     )}
                                     {currentStep === Steps.IOUParticipants && (
                                         <IOUParticipantsPage
+                                            animation={this.getAnimation()}
                                             participants={this.state.participants}
                                             hasMultipleParticipants={this.props.hasMultipleParticipants}
                                             onAddParticipants={this.addParticipants}
@@ -345,6 +364,7 @@ class IOUModal extends Component {
                                     )}
                                     {currentStep === Steps.IOUConfirm && (
                                         <IOUConfirmPage
+                                            animation={this.getAnimation()}
                                             onConfirm={this.createTransaction}
                                             hasMultipleParticipants={this.props.hasMultipleParticipants}
                                             participants={this.state.participants}

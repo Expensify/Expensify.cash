@@ -205,6 +205,7 @@ class OptionsSelector extends Component {
                 </View>
                 <OptionsList
                     ref={el => this.list = el}
+                    animation={this.props.animation}
                     optionHoveredStyle={styles.hoveredComponentBG}
                     onSelectRow={this.selectRow}
                     sections={this.props.sections}

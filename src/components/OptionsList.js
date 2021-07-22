@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import React, {forwardRef, Component} from 'react';
 import {View} from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import PropTypes from 'prop-types';
 import styles from '../styles/styles';
 import OptionRow from '../pages/home/sidebar/OptionRow';
@@ -9,6 +10,9 @@ import SectionList from './SectionList';
 import Text from './Text';
 
 const propTypes = {
+    /** String containing the animation type */
+    animation: PropTypes.string,
+
     /** option Background Color */
     optionBackgroundColor: PropTypes.string,
 
@@ -81,6 +85,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    animation: undefined,
     optionBackgroundColor: undefined,
     optionHoveredStyle: undefined,
     contentContainerStyles: [],
@@ -206,7 +211,12 @@ class OptionsList extends Component {
 
     render() {
         return (
-            <View style={this.props.listContainerStyles}>
+            <Animatable.View
+                animation={this.props.animation}
+                duration={300}
+                useNativeDriver
+                style={this.props.listContainerStyles}
+            >
                 {this.props.headerMessage ? (
                     <View style={[styles.ph5, styles.pb5]}>
                         <Text style={[styles.textLabel, styles.colorMuted]}>
@@ -229,7 +239,7 @@ class OptionsList extends Component {
                     renderSectionHeader={this.renderSectionHeader}
                     extraData={this.props.focusedIndex}
                 />
-            </View>
+            </Animatable.View>
         );
     }
 }

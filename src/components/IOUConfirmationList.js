@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {withOnyx} from 'react-native-onyx';
 import {withSafeAreaInsets} from 'react-native-safe-area-context';
+import * as Animatable from 'react-native-animatable';
 import styles from '../styles/styles';
 import Text from './Text';
 import themeColors from '../styles/themes/default';
@@ -21,6 +22,9 @@ import compose from '../libs/compose';
 import FixedFooter from './FixedFooter';
 
 const propTypes = {
+    /** String containing the animation type */
+    animation: PropTypes.string,
+
     /** Callback to inform parent modal of success */
     onConfirm: PropTypes.func.isRequired,
 
@@ -91,6 +95,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    animation: undefined,
     iou: {},
     onUpdateComment: null,
     comment: '',
@@ -244,34 +249,36 @@ class IOUConfirmationList extends Component {
         return (
             <>
                 <ScrollView style={[styles.flex1, styles.w100]}>
-                    <OptionsList
-                        listContainerStyles={[{
-                            // Give max height to the list container so that it does not extend
-                            // beyond the comment view as well as button
-                            maxHeight: this.props.windowHeight - MINIMUM_BOTTOM_OFFSET
-                                - this.props.insets.top - this.props.insets.bottom,
-                        }]}
-                        sections={this.getSections()}
-                        disableArrowKeysActions
-                        disableRowInteractivity
-                        hideAdditionalOptionStates
-                        forceTextUnreadStyle
-                        canSelectMultipleOptions={this.props.hasMultipleParticipants}
-                        disableFocusOptions
-                        selectedOptions={this.getAllOptionsAsSelected()}
-                    />
-                    <Text style={[styles.p5, styles.textMicroBold, styles.colorHeading]}>
-                        {this.props.translate('iOUConfirmationList.whatsItFor')}
-                    </Text>
-                    <View style={[styles.ph5, styles.pb5]}>
-                        <TextInput
-                            style={[styles.textInput]}
-                            value={this.props.comment}
-                            onChangeText={this.props.onUpdateComment}
-                            placeholder={this.props.translate('common.optional')}
-                            placeholderTextColor={themeColors.placeholderText}
+                    <Animatable.View animation={this.props.animation} duration={300}>
+                        <OptionsList
+                            listContainerStyles={[{
+                                // Give max height to the list container so that it does not extend
+                                // beyond the comment view as well as button
+                                maxHeight: this.props.windowHeight - MINIMUM_BOTTOM_OFFSET
+                                    - this.props.insets.top - this.props.insets.bottom,
+                            }]}
+                            sections={this.getSections()}
+                            disableArrowKeysActions
+                            disableRowInteractivity
+                            hideAdditionalOptionStates
+                            forceTextUnreadStyle
+                            canSelectMultipleOptions={this.props.hasMultipleParticipants}
+                            disableFocusOptions
+                            selectedOptions={this.getAllOptionsAsSelected()}
                         />
-                    </View>
+                        <Text style={[styles.p5, styles.textMicroBold, styles.colorHeading]}>
+                            {this.props.translate('iOUConfirmationList.whatsItFor')}
+                        </Text>
+                        <View style={[styles.ph5, styles.pb5]}>
+                            <TextInput
+                                style={[styles.textInput]}
+                                value={this.props.comment}
+                                onChangeText={this.props.onUpdateComment}
+                                placeholder={this.props.translate('common.optional')}
+                                placeholderTextColor={themeColors.placeholderText}
+                            />
+                        </View>
+                    </Animatable.View>
                 </ScrollView>
                 <FixedFooter>
                     <Button
