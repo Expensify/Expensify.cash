@@ -269,6 +269,10 @@ const CONST = {
     },
 
     WALLET: {
+        PAYMENT_TYPE: {
+            INSTANT: 'instant',
+            ACH: 'ach',
+        },
         ERROR: {
             IDENTITY_NOT_FOUND: 'Identity not found',
             INVALID_SSN: 'Invalid SSN',

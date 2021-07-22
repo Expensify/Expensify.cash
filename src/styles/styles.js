@@ -107,6 +107,13 @@ const styles = {
         fontWeight: fontWeightBold,
     },
 
+    text7XLarge: {
+        color: themeColors.heading,
+        fontFamily: fontFamily.GTA_BOLD,
+        fontSize: variables.fontSize7XLarge,
+        fontWeight: fontWeightBold,
+    },
+
     textStrong: {
         fontFamily: fontFamily.GTA_BOLD,
         fontWeight: fontWeightBold,
@@ -1802,6 +1809,16 @@ const styles = {
         right: -36,
         top: 0,
         bottom: 0,
+    },
+
+    transferBalancePayment: {
+        borderWidth: 2,
+        borderRadius: variables.componentBorderRadiusNormal,
+        borderColor: themeColors.border,
+    },
+
+    transferBalanceSelectedPayment: {
+        borderColor: themeColors.iconSuccessFill,
     },
 };
 
