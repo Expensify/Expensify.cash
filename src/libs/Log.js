@@ -5,21 +5,26 @@ import getPlatform from './getPlatform';
 import {version} from '../../package.json';
 import NetworkConnection from './NetworkConnection';
 
+let timeout = null;
+let info;
+
 /**
  * Network interface for logger.
  *
  * @param {Object} params
  * @param {Object} params.parameters
  * @param {String} params.message
+ * @return {Promise}
  */
 function serverLoggingCallback(params) {
-    const requestParams = {
-        message: params.message,
-        parameters: JSON.stringify(params.parameters || {}),
-        expensifyCashAppVersion: `expensifyCash[${getPlatform()}]${version}`,
-    };
-
-    API.Log(requestParams);
+    const requestParams = params;
+    requestParams.expensifyCashAppVersion = `expensifyCash[${getPlatform()}]${version}`;
+    if (requestParams.parameters) {
+        requestParams.parameters = JSON.stringify(params.parameters);
+    }
+    clearTimeout(timeout);
+    timeout = setTimeout(() => info('Flushing logs older than 10 minutes', true), 10 * 60 * 1000);
+    return API.Log(requestParams);
 }
 
 // Note: We are importing Logger from expensify-common because it is
@@ -33,6 +38,8 @@ const Log = new Logger({
     },
     isDebug: !CONFIG.IS_IN_PRODUCTION,
 });
+info = Log.info;
+timeout = setTimeout(() => info('Flushing logs older than 10 minutes', true), 10 * 60 * 1000);
 
 NetworkConnection.registerLogInfoCallback(Log.info);
 export default Log;
