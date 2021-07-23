@@ -78,6 +78,14 @@ class PopoverWithMeasuredContent extends Component {
         ) || !_.isEqual(this.state, nextState);
     }
 
+    componentDidUpdate(prevProps) {
+        // When Popover is shown recalculate
+        if (!prevProps.isVisible && this.props.isVisible) {
+            // eslint-disable-next-line react/no-did-update-set-state
+            this.setState({isContentMeasured: false});
+        }
+    }
+
     /**
      * Measure the size of the popover's content.
      *
