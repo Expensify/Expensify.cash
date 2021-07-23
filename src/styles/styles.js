@@ -1496,6 +1496,12 @@ const styles = {
         height: '100%',
     },
 
+    navigationSceneFullScreenWrapper: {
+        borderRadius: variables.componentBorderRadiusCard,
+        overflow: 'hidden',
+        height: '100%',
+    },
+
     invisible: {
         position: 'absolute',
         opacity: 0,
@@ -1798,6 +1804,16 @@ const styles = {
         ...whiteSpace.noWrap,
     },
 
+    cardOverlay: {
+        backgroundColor: themeColors.modalBackdrop,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        opacity: 0.5,
+    },
+
     communicationsLinkIcon: {
         right: -36,
         top: 0,
@@ -1913,20 +1929,18 @@ function getSafeAreaMargins(insets) {
 /**
  * Return navigation menu styles.
  *
- * @param {Number} windowWidth
- * @param {Number} windowHeight
  * @param {Boolean} isSmallScreenWidth
  * @returns {Object}
  */
-function getNavigationDrawerStyle(windowWidth, windowHeight, isSmallScreenWidth) {
+function getNavigationDrawerStyle(isSmallScreenWidth) {
     return isSmallScreenWidth
         ? {
-            width: windowWidth,
-            height: windowHeight,
+            width: '100%',
+            height: '100%',
             borderColor: themeColors.border,
         }
         : {
-            height: windowHeight,
+            height: '100%',
             width: variables.sideBarWidth,
             borderRightColor: themeColors.border,
         };
