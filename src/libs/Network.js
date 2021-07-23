@@ -3,6 +3,7 @@ import lodashGet from 'lodash/get';
 import Onyx from 'react-native-onyx';
 import HttpUtils from './HttpUtils';
 import ONYXKEYS from '../ONYXKEYS';
+import * as ActiveClientManager from './ActiveClientManager';
 import CONST from '../CONST';
 
 let isQueuePaused = false;
@@ -25,23 +26,56 @@ let onError = () => {};
 let isOffline;
 Onyx.connect({
     key: ONYXKEYS.NETWORK,
-    callback: val => isOffline = val && val.isOffline,
-});
-
-let didLoadPersistedRequests;
-Onyx.connect({
-    key: ONYXKEYS.NETWORK_REQUEST_QUEUE,
-    callback: (persistedRequests) => {
-        if (didLoadPersistedRequests || !persistedRequests) {
+    callback: (val) => {
+        if (!val) {
             return;
         }
 
-        // Merge the persisted requests with the requests in memory then clear out the queue as we only need to load
-        // this once when the app initializes
-        networkRequestQueue = [...networkRequestQueue, ...persistedRequests];
-        didLoadPersistedRequests = true;
-        Onyx.set(ONYXKEYS.NETWORK_REQUEST_QUEUE, []);
+        // Client becomes online, process the queue.
+        if (isOffline && !val.isOffline) {
+            // Fake merge which trigger the NETWORK_REQUEST_QUEUE Onyx's subscription callback
+            Onyx.merge(ONYXKEYS.NETWORK_REQUEST_QUEUE, []);
+        }
+        isOffline = val.isOffline;
     },
+});
+
+let didLoadPersistedRequests;
+
+ActiveClientManager.isReady().then(() => {
+    Onyx.connect({
+        key: ONYXKEYS.NETWORK_REQUEST_QUEUE,
+        callback: (persistedRequests) => {
+            // NETWORK_REQUEST_QUEUE is shared across clients, thus every client will have similiar copy of
+            // NETWORK_REQUEST_QUEUE. It is very important to only process the queue from leader client
+            // otherwise requests will be duplicated.
+            // We only process the persisted requests when
+            // a) Client is leader.
+            // b) User is online.
+            // c) requests are not already loaded,
+            // d) When there is at least one request
+            if (!ActiveClientManager.isClientTheLeader()
+                || isOffline
+                || didLoadPersistedRequests
+                || !persistedRequests
+                || !persistedRequests.length) {
+                return;
+            }
+
+            // Queue processing expects handlers but due to we are loading the requests from Storage
+            // we just noop them to ignore the errors.
+            _.each(persistedRequests, (request) => {
+                request.resolve = () => {};
+                request.reject = () => {};
+            });
+
+            // Merge the persisted requests with the requests in memory then clear out the queue as we only need to load
+            // this once when the app initializes
+            networkRequestQueue = [...networkRequestQueue, ...persistedRequests];
+            Onyx.set(ONYXKEYS.NETWORK_REQUEST_QUEUE, []);
+            didLoadPersistedRequests = true;
+        },
+    });
 });
 
 // Subscribe to the user's session so we can include their email in every request and include it in the server logs
@@ -107,12 +141,19 @@ function processNetworkRequestQueue() {
         if (!networkRequestQueue.length) {
             return;
         }
+        const retryableRequests = [];
 
-        // If we have a request then we need to check if it can be persisted in case we close the tab while offline
-        const retryableRequests = _.filter(networkRequestQueue, request => (
-            !request.data.doNotRetry && request.data.persist
-        ));
-        Onyx.set(ONYXKEYS.NETWORK_REQUEST_QUEUE, retryableRequests);
+        // If we have a request then we need to check if it can be persisted in case we close the tab while offline.
+        // We filter persisted requests from the normal Queue to remove duplicates
+        networkRequestQueue = _.reject(networkRequestQueue, (request) => {
+            if (!request.data.doNotRetry && request.data.persist) {
+                retryableRequests.push(request);
+                return true;
+            }
+        });
+        if (retryableRequests.length) {
+            Onyx.merge(ONYXKEYS.NETWORK_REQUEST_QUEUE, retryableRequests);
+        }
         return;
     }
 
@@ -160,6 +201,18 @@ function processNetworkRequestQueue() {
             .then(response => onResponse(queuedRequest, response))
             .catch(error => onError(queuedRequest, error));
     });
+
+    // We should clear the NETWORK_REQUEST_QUEUE when we have loaded the persisted requests & they are processed.
+    // As multiple client will be sharing the same Queue and NETWORK_REQUEST_QUEUE is synchronized among clients,
+    // we only ask Leader client to clear the queue
+    if (ActiveClientManager.isClientTheLeader() && didLoadPersistedRequests) {
+        Onyx.set(ONYXKEYS.NETWORK_REQUEST_QUEUE, []);
+    }
+
+    // User could have bad connectivity and he can go offline multiple times
+    // thus we allow NETWORK_REQUEST_QUEUE to be processed multiple times but only after we have processed
+    // old requests in the NETWORK_REQUEST_QUEUE
+    didLoadPersistedRequests = false;
 
     // We clear the request queue at the end by setting the queue to retryableRequests which will either have some
     // requests we want to retry or an empty array
