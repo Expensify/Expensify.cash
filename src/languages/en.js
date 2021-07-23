@@ -63,7 +63,7 @@ export default {
     },
     attachmentPicker: {
         cameraPermissionRequired: 'Camera Permission Required',
-        expensifyDoesntHaveAccessToCamera: 'Expensify.cash does not have access to your camera, please enable the permission and try again.',
+        expensifyDoesntHaveAccessToCamera: 'This app does not have access to your camera, please enable the permission and try again.',
         attachmentError: 'Attachment Error',
         errorWhileSelectingAttachment: 'An error occurred while selecting an attachment, please try again',
         errorWhileSelectingCorruptedImage: 'An error occurred while selecting a corrupted attachment, please try another file',
@@ -77,7 +77,7 @@ export default {
     },
     baseUpdateAppModal: {
         updateApp: 'Update App',
-        updatePrompt: 'A new version of Expensify.cash is available.\nUpdate now or restart the app at a later time to download the latest changes.',
+        updatePrompt: 'A new version of this app is available.\nUpdate now or restart the app at a later time to download the latest changes.',
     },
     iOUConfirmationList: {
         whoPaid: 'WHO PAID?',
@@ -98,7 +98,7 @@ export default {
     hello: 'Hello',
     phoneCountryCode: '1',
     welcomeText: {
-        phrase1: 'Welcome to the New Expensify! Enter your phone number or email to continue.',
+        phrase1: 'Welcome to New Expensify! Enter your phone number or email to continue.',
         phrase2: 'Money talks. And now that chat and payments are in one place, it\'s also easy.',
         phrase3: 'Your payments get to you as fast as you can get your point across.',
     },
@@ -229,7 +229,7 @@ export default {
     },
     passwordPage: {
         changePassword: 'Change Password',
-        changingYourPasswordPrompt: 'Changing your password will update your password for both your Expensify.com\nand Expensify.cash accounts.',
+        changingYourPasswordPrompt: 'Changing your password will update your password for both your Expensify.com\nand New Expensify accounts.',
         currentPassword: 'Current Password',
         newPassword: 'New Password',
         newPasswordPrompt: 'New password must be different than your old password, have at least 8 characters,\n1 capital letter, 1 lowercase letter, 1 number.',
@@ -265,8 +265,8 @@ export default {
         },
     },
     signInPage: {
-        expensifyDotCash: 'Expensify.cash',
-        expensifyIsOpenSource: 'The New Expensify is open source',
+        expensifyDotCash: 'New Expensify',
+        expensifyIsOpenSource: 'New Expensify is open source',
         theCode: 'the code',
         openJobs: 'open jobs',
         heroHeading: 'Split bills\nand chat with friends.',

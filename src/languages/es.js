@@ -58,7 +58,7 @@ export default {
     },
     attachmentPicker: {
         cameraPermissionRequired: 'Se necesita permiso para usar la cámara',
-        expensifyDoesntHaveAccessToCamera: 'Expensify.cash no tiene acceso a tu cámara, por favor activa el permiso y vuelve a intentarlo.',
+        expensifyDoesntHaveAccessToCamera: 'Esta aplicación no tiene acceso a tu cámara, por favor activa el permiso y vuelve a intentarlo.',
         attachmentError: 'Error al adjuntar archivo',
         errorWhileSelectingAttachment: 'Ha ocurrido un error al seleccionar un adjunto, por favor inténtalo de nuevo',
         errorWhileSelectingCorruptedImage: 'Ha ocurrido un error al seleccionar un adjunto corrupto, por favor intentalo con otro archivo',
@@ -72,7 +72,7 @@ export default {
     },
     baseUpdateAppModal: {
         updateApp: 'Actualizar App',
-        updatePrompt: 'Existe una nueva versión de Expensify.cash.\nActualiza ahora or reinicia la aplicación más tarde para recibir la última versión.',
+        updatePrompt: 'Existe una nueva versión de esta aplicación.\nActualiza ahora or reinicia la aplicación más tarde para recibir la última versión.',
     },
     iOUConfirmationList: {
         whoPaid: '¿QUIÉN PAGO?',
@@ -93,7 +93,7 @@ export default {
     hello: 'Hola',
     phoneCountryCode: '34',
     welcomeText: {
-        phrase1: 'Con Expensify.cash, chat y pagos son lo mismo.',
+        phrase1: 'Con Nuevo Expensify, chat y pagos son lo mismo.',
         phrase2: 'El dinero habla. Y ahora que chat y pagos están en un mismo lugar, es también fácil.',
         phrase3: 'Tus pagos llegan tan rápido como tus mensajes.',
     },
@@ -221,7 +221,7 @@ export default {
     },
     passwordPage: {
         changePassword: 'Cambiar Contraseña',
-        changingYourPasswordPrompt: 'El cambio de contraseña va a afectar tanto a la cuenta de Expensify.com\ncomo la de Expensify.cash.',
+        changingYourPasswordPrompt: 'El cambio de contraseña va a afectar tanto a la cuenta de Expensify.com\ncomo la de Nuevo Expensify.',
         currentPassword: 'Contraseña Actual',
         newPassword: 'Nueva contraseña',
         newPasswordPrompt: 'La nueva contraseña tiene que ser diferente de la antigua, tener al menos 8 letras,\n1 letra mayúscula, 1 letra minúscula y 1 número.',
@@ -256,18 +256,19 @@ export default {
         },
     },
     signInPage: {
-        expensifyDotCash: 'Expensify.cash',
-        expensifyIsOpenSource: 'Expensify.cash es open source',
+        expensifyDotCash: 'New Expensify',
+        expensifyIsOpenSource: 'New Expensify es open source',
         theCode: 'el código',
         openJobs: 'trabajos disponibles',
     },
     termsOfUse: {
-        phrase1: 'Al usar Expensify.cash, estás aceptando los',
+        phrase1: 'Al iniciar sesión, estás accediendo a los',
         phrase2: 'términos de servicio',
         phrase3: 'y',
         phrase4: 'política de privacidad',
-        phrase5: 'El envío de dinero es brindado por Expensify Payments LLC (NMLS ID:2017010) de conformidad con sus',
-        phrase6: 'licencias',
+        phrase5: 'El envío de dinero es brindado por Expensify Payments LLC (NMLS',
+        phrase6: 'ID:2017010) de conformidad con sus',
+        phrase7: 'licencias',
     },
     passwordForm: {
         pleaseFillOutAllFields: 'Por favor completa todos los campos',
